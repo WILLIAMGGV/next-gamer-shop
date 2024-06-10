@@ -8,6 +8,7 @@ import Menu from "./menu";
 import Juegos from "./juegos";
 import Paises from "./paises";
 import Presupuesto from "./presupuesto";
+import Bancos from "./bancos";
 
 function Dashboard() {
   const router = useRouter();
@@ -91,6 +92,7 @@ function Dashboard() {
         {selectmenu == "juegos" ? <Juegos /> : <></>}
         {selectmenu == "paises" ? <Paises /> : <></>}
         {selectmenu == "presupuesto" ? <Presupuesto /> : <></>}
+        {selectmenu == "bancos" ? <Bancos /> : <></>}
 
         <div>
           <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">

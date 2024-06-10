@@ -100,8 +100,10 @@ const menu = ({ opcion }) => {
 
       <div className="m-2">
         <a
-          href="#"
-          class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          onClick={() => {
+            opcion("bancos");
+          }}
+          class=" cursor-pointer w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
             class="w-[32px] h-[32px] text-white"
@@ -114,14 +116,20 @@ const menu = ({ opcion }) => {
           >
             <path
               fill-rule="evenodd"
-              d="M12 5a7 7 0 0 0-7 7v1.17c.313-.11.65-.17 1-.17h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H6a3 3 0 0 1-3-3v-6a9 9 0 0 1 18 0v6a3 3 0 0 1-3 3h-2a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h2c.35 0 .687.06 1 .17V12a7 7 0 0 0-7-7Z"
+              d="M4 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H4Zm0 6h16v6H4v-6Z"
+              clip-rule="evenodd"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M5 14a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Zm5 0a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2h-5a1 1 0 0 1-1-1Z"
               clip-rule="evenodd"
             />
           </svg>
+
           <div class="text-left rtl:text-right">
             <div class="mb-1 text-xs">&nbsp;&nbsp; Registro</div>
             <div class="-mt-1 font-sans text-sm font-semibold">
-              &nbsp;&nbsp; Juegos
+              &nbsp;&nbsp; Bancos
             </div>
           </div>
         </a>
