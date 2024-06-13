@@ -3,7 +3,7 @@ import { conn } from "../../libs/mysql";
 
 export async function GET() {
   try {
-    const results = await conn.query("SELECT * FROM juegos");
+    const results = await conn.query("SELECT * FROM paquetes");
     return NextResponse.json(results);
   } catch (error) {
     console.log(error);

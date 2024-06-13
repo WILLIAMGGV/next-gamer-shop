@@ -3,8 +3,7 @@ import { conn } from "../../libs/mysql";
 
 export async function GET() {
   try {
-    const results = await conn.query("SELECT * FROM juegos");
-
+    const results = await conn.query("SELECT * FROM temporal");
     return NextResponse.json(results);
   } catch (error) {
     console.log(error);
@@ -22,24 +21,25 @@ export async function GET() {
 export async function POST(request) {
   try {
     console.log(request);
-    const { nombre, categoria, prg } = await request.json();
+    const { idp, precio, prg, idpais, total, abreviacion } =
+      await request.json();
 
-    const result = await conn.query("INSERT INTO juegos SET ?", {
-      nombre: nombre,
-      categoria: categoria,
+    const result = await conn.query("INSERT INTO temporal SET ?", {
+      idp: idp,
+      precio: precio,
       prg: prg,
-    });
-
-    const result2 = await conn.query("INSERT INTO asignacion SET ?", {
-      idp: 0,
-      nombre: nombre,
-      idj: result.insertId,
+      idpais: idpais,
+      total: total,
+      abreviacion: abreviacion,
     });
 
     return NextResponse.json({
-      nombre: nombre,
-      categoria: categoria,
+      idp: idp,
+      precio: precio,
       prg: prg,
+      idpais: idpais,
+      total: total,
+      abreviacion: abreviacion,
       id: result.insertId,
     });
   } catch (error) {

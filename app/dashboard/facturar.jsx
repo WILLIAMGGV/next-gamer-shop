@@ -3,19 +3,36 @@ import logo from "../img/V1.png";
 import React, { useRef, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { Button, Popconfirm } from "antd";
+import { Tooltip } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 
-const juegos = () => {
+const facturar = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showModal2, setShowModal2] = React.useState(false);
   const [showModal3, setShowModal3] = React.useState(false);
   const [showModal4, setShowModal4] = React.useState(false);
 
+  const [nombrepais, setNombrepais] = React.useState("Seleccionar Pais");
+  const [preciopais, setPreciopais] = React.useState(0);
+  const [abreviacion, setAbreviacion] = React.useState("");
+
+  const [nombrebanco, setNombrebanco] = React.useState("Ninguno");
+  const [errorreferencia, setErrorreferencia] = React.useState(false);
+
   const [listajuegos, setListajuegos] = React.useState([]);
   const [listapaquetes, setListapaquetes] = React.useState([]);
+  const [listapais, setListapais] = React.useState([]);
+  const [listabancos, setListabancos] = React.useState([]);
+  const [listapaquetes2, setListapaquetes2] = React.useState([]);
+
+  const [listatemporal, setListaTemporal] = React.useState([]);
   const [valorid, setValorid] = React.useState(0);
   const [valorid2, setValorid2] = React.useState(0);
   const [valoridp, setValoridp] = React.useState(0);
+  const [valoridb, setValoridb] = React.useState(0);
+  const [valoridpais, setValoridpais] = React.useState(0);
+  const [referencia, setReferencia] = React.useState(0);
   const [estado, setEstado] = React.useState(false);
   const [estado2, setEstado2] = React.useState(false);
   const [juegos, setJuegos] = React.useState({
@@ -28,6 +45,24 @@ const juegos = () => {
     precio: 0,
     prg: "",
   });
+  const [paises, setPaises] = React.useState({
+    id: "",
+    nombre: "Seleccionar Pais",
+    abreviacion: "",
+  });
+
+  const obtenerfechaactual = () => {
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate();
+    const mes = fechaActual.getMonth() + 1;
+    const año = fechaActual.getFullYear();
+
+    const fechaFormateada = `${año}-${mes.toString().padStart(2, "0")}-${dia
+      .toString()
+      .padStart(2, "0")}`;
+    console.log(fechaFormateada);
+    return fechaFormateada; // Output: la fecha actual en formato dd-mm-yyyy
+  };
 
   const msjsave = (mensajesave, tipodemensaje) => {
     if (tipodemensaje == "save") {
@@ -50,9 +85,74 @@ const juegos = () => {
     });
   };
 
+  const getbancos = () => {
+    axios.get("api/bancos/").then((response) => {
+      setListabancos(response.data);
+    });
+  };
+
+  const getpaises = () => {
+    axios.get("api/paises/").then((response) => {
+      setListapais(response.data);
+    });
+  };
+
+  const getTemporal = () => {
+    axios.get("api/temporal/").then((response) => {
+      setListaTemporal(response.data);
+    });
+  };
+
+  const confirm3 = async () => {
+    const asignar = document.getElementById("asignarpais").value;
+    console.log(asignar);
+    setValoridpais(asignar);
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id === parseInt(asignar)) {
+        setNombrepais(listapais[i].nombre);
+        setPreciopais(listapais[i].precio);
+        setAbreviacion(listapais[i].abreviacion);
+      }
+    }
+    getpaquetes();
+  };
+
+  const confirm4 = async () => {
+    const asignar = document.getElementById("idbanco").value;
+
+    setValoridpais(asignar);
+    for (let i = 0; i < listabancos.length; i++) {
+      if (listabancos[i].id === parseInt(asignar)) {
+        setNombrebanco(listabancos[i].nombre);
+        setValoridb(listabancos[i].id);
+      }
+    }
+  };
+
+  const confirm5 = async () => {
+    const asignar = document.getElementById("referencia").value;
+
+    setReferencia(asignar);
+
+    axios.get(`api/factura/${asignar}/`).then((response) => {
+      console.log(response.data.length);
+      if (response.data.length == 0) {
+        setErrorreferencia(false);
+      } else {
+        setErrorreferencia(true);
+      }
+    });
+  };
+
   const getpaquetes = () => {
-    axios.get(`api/paquetes/${valorid2}/`).then((response) => {
+    axios.get(`api/paquetes/${valorid}/`).then((response) => {
       setListapaquetes(response.data);
+    });
+  };
+
+  const getpaquetes2 = () => {
+    axios.get(`api/paquetes/`).then((response) => {
+      setListapaquetes2(response.data);
     });
   };
 
@@ -77,6 +177,17 @@ const juegos = () => {
           categoria: listajuegos[i].categoria,
           prg: listajuegos[i].prg,
         });
+      }
+    }
+    return null;
+  };
+
+  const obtenerpais = (tipo, idpa) => {
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpa) {
+        if (tipo == "nombre") {
+          return listapais[i].nombre;
+        }
       }
     }
     return null;
@@ -126,6 +237,23 @@ const juegos = () => {
     return null;
   };
 
+  const obtenernombre3 = (tipo, idpa) => {
+    for (let i = 0; i < listapaquetes2.length; i++) {
+      if (listapaquetes2[i].id == idpa) {
+        if (tipo == "nombre") {
+          return listapaquetes2[i].nombre;
+        }
+        if (tipo == "precio") {
+          return listapaquetes2[i].precio;
+        }
+        if (tipo == "prg") {
+          return listapaquetes2[i].prg;
+        }
+      }
+    }
+    return null;
+  };
+
   const obtenerregistro = () => {
     for (let i = 0; i < listajuegos.length; i++) {
       if (listajuegos[i].id == valorid) {
@@ -152,15 +280,18 @@ const juegos = () => {
     }
   };
 
+  const obtenertotal = (precio, prg) => {
+    var porcentaje = ((precio * preciopais) / 100) * prg;
+    var total = precio * preciopais + porcentaje;
+    var total = total.toFixed(2);
+    return total;
+  };
+
   const form = useRef(null);
   const form2 = useRef(null);
 
-  const handleChange = (e) => {
-    console.log(e.target.value);
-    setJuegos({
-      ...juegos,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = () => {
+    setValorid(document.getElementById("juegose").value);
   };
 
   const handleChange2 = (e) => {
@@ -230,13 +361,11 @@ const juegos = () => {
   };
 
   const selectdelete = async (id) => {
-    const res = await axios.delete(`api/juegos/${id}`);
+    const res = await axios.delete(`api/temporal/${id}`);
 
     if (res.request.status === 204) {
-      msjsave("Eliminado con Exito", "save");
-      setShowModal2(false);
-      setValorid2(0);
-      getjuegos();
+      msjsave("Eliminado de la factura con Exito", "save");
+      getTemporal();
     }
   };
 
@@ -258,12 +387,87 @@ const juegos = () => {
     selectdelete2(id);
   };
 
+  const agregaralcarrito = async (idp, precio, prg, idpais) => {
+    var porcentaje = ((precio * preciopais) / 100) * prg;
+    var total = precio * preciopais + porcentaje;
+    var total = total.toFixed(2);
+    var data = {
+      idp,
+      precio,
+      prg,
+      idpais,
+      total,
+      abreviacion,
+    };
+
+    const res = await axios.post("/api/temporal", data);
+    console.log(res);
+    if (res.request.status === 200) {
+      console.log("GUARDADO");
+
+      msjsave("Agregado a la Factura", "save");
+
+      getTemporal();
+    }
+  };
+
+  const obtenertotalgeneral = () => {
+    var total2 = 0.0;
+    for (let i = 0; i < listatemporal.length; i++) {
+      total2 = listatemporal[i].total + total2;
+    }
+
+    return total2.toFixed(2);
+  };
+
+  const guardarfacturar = async () => {
+    var error = 0;
+    if (nombrebanco == "Ninguno") {
+      msjsave("Seleccione un Banco o Metodo de Pago", "error");
+      error = 1;
+    }
+    if (referencia == 0) {
+      msjsave("Ingrese una Referencia", "error");
+      error = 1;
+    }
+    if (errorreferencia == true) {
+      msjsave("La referencia que intenta agregar esta registrada", "error");
+      error = 1;
+    }
+    if (error == 0) {
+      var total = obtenertotalgeneral();
+      var fecha = obtenerfechaactual();
+      var telefono = "584126515046";
+      var data = {
+        referencia,
+        total,
+        fecha,
+        telefono,
+        listatemporal,
+      };
+      console.log(data);
+      const res = await axios.post("/api/factura", data);
+      console.log(res);
+      if (res.request.status === 200) {
+        console.log("GUARDADO");
+        setErrorreferencia(false);
+        setReferencia(0);
+        getTemporal();
+        msjsave("Registro con Exito", "save");
+      }
+    }
+  };
+
   useEffect(() => {
     getjuegos();
+    getpaises();
+    getpaquetes2();
+    getTemporal();
+    getbancos();
   }, []);
 
   useEffect(() => {
-    obtenerregistro();
+    getpaquetes();
   }, [valorid]);
 
   useEffect(() => {
@@ -278,186 +482,62 @@ const juegos = () => {
     <div>
       <div className="flex place-content-center max-md:flex-col">
         <div className="p-4">
-          <h2 className="text-blue-200 pb-4 font-bold">Registro de Juegos</h2>
+          <p className="text-blue-200 pb-4 font-bold">Seleccionar un Juego</p>
+          <div className="flex place-content-between">
+            <select
+              id="juegose"
+              onChange={handleChange}
+              class=" w-[50%] block p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            >
+              <option value="0" selected>
+                Sin Seleccion
+              </option>
+              {listajuegos.map((val, key) => {
+                return <option value={val.id}>{val.nombre}</option>;
+              })}
+            </select>
+          </div>
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Imagen
-                  </th>
-                  <th scope="col" className="px-6 py-3">
                     Nombre
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Precio
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
                     PRG
                   </th>
-
-                  <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">Edit</span>
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-right">
-                    <svg
-                      className="w-[24px] h-[24px] text-green-500 dark:text-white cursor-pointer"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      onClick={() => {
-                        setShowModal(true);
-                        setEstado(0);
-                        setJuegos({
-                          nombre: "null",
-                          categoria: "null",
-                          prg: "0",
-                        });
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Total (con %){" "}
+                    <Popconfirm
+                      title="Asignar Pais"
+                      okText="Actualizar"
+                      showCancel={false}
+                      description=<div>
+                        <select id={`asignarpais`}>
+                          {listapais.map((val2, key) => {
+                            return (
+                              <option value={val2.id}>{val2.nombre}</option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      onConfirm={() => {
+                        confirm3();
                       }}
                     >
-                      <path
-                        fill-rule="evenodd"
-                        d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {listajuegos.map((val, key) => {
-                  return (
-                    <tr
-                      key={val.id}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        <img
-                          className="w-10 h-10 rounded-full cursor-pointer"
-                          src="https://picsum.photos/200"
-                          alt="Jese image"
-                          onClick={() => {
-                            setValorid2(val.id);
-                          }}
-                        />
-                      </th>
-                      <td className="px-6 py-4">{val.nombre}</td>
-                      <td className="px-6 py-4">{val.prg}%</td>
-
-                      <td className="px-6 py-4 text-right">
-                        <svg
-                          className="w-[24px] h-[24px] text-gray-800 hover:text-yellow-600 dark:text-white cursor-pointer"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          onClick={() => {
-                            setShowModal(true);
-                            setValorid(val.id);
-                            setEstado(1);
-                          }}
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z"
-                            clip-rule="evenodd"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <svg
-                          className="w-[24px] h-[24px] text-gray-800 hover:text-red-600 dark:text-white cursor-pointer"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          onClick={() => {
-                            setShowModal2(true);
-                            setValorid(val.id);
-                          }}
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="p-4">
-          <h2 className="text-blue-200 pb-4 font-bold">Registro de Paquetes</h2>
-          <div className="flex bg-slate-200 rounded-lg h-[80px] mb-2">
-            <div className="">
-              <Image src={logo} alt="paquete" className="h-full w-[200px]" />
-            </div>
-            <div className="flex flex-col place-content-center">
-              <div className=" text-lg font-bold text-blue-800">
-                {obtenernombre1("nombre")}
-              </div>
-              <div className=" text-sm font-bold">
-                Disponibles {listapaquetes.length} Paquetes
-              </div>
-            </div>
-          </div>
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    Nombre
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Precio (USD)
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    PRG
+                      <br />
+                      <span className="text-blue-500 cursor-pointer">
+                        {nombrepais} ({preciopais})
+                      </span>
+                    </Popconfirm>
                   </th>
 
                   <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">Edit</span>
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-right">
-                    {valorid2 == 0 ? (
-                      <div></div>
-                    ) : (
-                      <svg
-                        className="w-[24px] h-[24px] text-green-500 dark:text-white cursor-pointer"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        onClick={() => {
-                          setEstado2(0);
-                          setShowModal3(true);
-                        }}
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    )}
+                    <span className="sr-only">Agregar</span>
                   </th>
                 </tr>
               </thead>
@@ -474,36 +554,194 @@ const juegos = () => {
                       >
                         {val.nombre}
                       </th>
-                      <td className="px-6 py-4">{val.precio}</td>
+                      <td className="px-6 py-4 text-center">{val.precio}</td>
+                      <td className="px-6 py-4 text-center">{val.prg}%</td>
+                      <td className="px-6 py-4 text-center">
+                        {obtenertotal(val.precio, val.prg)}
+                        {" " + abreviacion}
+                      </td>
+
+                      <td className="px-6 py-4 text-right">
+                        {valoridpais == 0 ? (
+                          <div></div>
+                        ) : (
+                          <svg
+                            class="w-[32px] h-[32px] text-gray-800 hover:text-green-600 cursor-pointer"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            onClick={() => {
+                              agregaralcarrito(
+                                val.id,
+                                val.precio,
+                                val.prg,
+                                valoridpais
+                              );
+                            }}
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M5 3a1 1 0 0 0 0 2h.687L7.82 15.24A3 3 0 1 0 11.83 17h2.34A3 3 0 1 0 17 15H9.813l-.208-1h8.145a1 1 0 0 0 .979-.796l1.25-6A1 1 0 0 0 19 6h-2.268A2 2 0 0 1 15 9a2 2 0 1 1-4 0 2 2 0 0 1-1.732-3h-1.33L7.48 3.796A1 1 0 0 0 6.5 3H5Z"
+                              clip-rule="evenodd"
+                            />
+                            <path
+                              fill-rule="evenodd"
+                              d="M14 5a1 1 0 1 0-2 0v1h-1a1 1 0 1 0 0 2h1v1a1 1 0 1 0 2 0V8h1a1 1 0 1 0 0-2h-1V5Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="p-4">
+          <h2 className="text-blue-200 pb-4 font-bold">Facturaci&oacute;n</h2>
+          <div className="flex bg-slate-200 rounded-lg h-[80px] mb-2">
+            <div className="">
+              <Image src={logo} alt="paquete" className="h-full w-[200px]" />
+            </div>
+            <div className="flex flex-col place-content-center">
+              <div className=" text-lg font-bold text-blue-800">
+                {obtenernombre1("nombre")}
+              </div>
+              <div className=" text-sm font-bold">
+                Fecha:{" "}
+                <span className=" text-blue-900">{obtenerfechaactual()}</span>
+              </div>
+              <div className=" text-sm font-bold">
+                Referencia #:{" "}
+                <span className=" text-blue-900">
+                  {errorreferencia == true ? (
+                    <span className="text-red-500 cursor-pointer">
+                      <Tooltip
+                        title="El numero de Referencia que intenta Agregar ya existe, intente con otro"
+                        color="red"
+                        key="red"
+                      >
+                        {referencia}
+                      </Tooltip>
+                    </span>
+                  ) : (
+                    <>
+                      {referencia == 0 ? (
+                        <>{referencia}</>
+                      ) : (
+                        <span className="text-green-500 cursor-pointer">
+                          <Tooltip
+                            title="El numero de Referencia es Valido"
+                            color="green"
+                            key="green"
+                          >
+                            {referencia}
+                          </Tooltip>
+                        </span>
+                      )}
+                    </>
+                  )}
+                  {" ->"}
+                  <Popconfirm
+                    title="Metodo de Pago"
+                    okText="Actualizar"
+                    showCancel={false}
+                    description=<div>
+                      <input
+                        type="text"
+                        id="referencia"
+                        placeholder="0000000"
+                      />
+                    </div>
+                    onConfirm={() => {
+                      confirm5();
+                    }}
+                  >
+                    <button className=" text-red-700">Editar</button>
+                  </Popconfirm>
+                </span>
+              </div>
+              <div className=" text-sm font-bold">
+                Metodo de Pago:{" "}
+                <span className=" text-blue-900">
+                  {nombrebanco}{" "}
+                  <Popconfirm
+                    title="Metodo de Pago"
+                    okText="Actualizar"
+                    showCancel={false}
+                    description=<div>
+                      <select id="idbanco">
+                        {listabancos.map((val2, key) => {
+                          return (
+                            <option value={val2.id}>
+                              {val2.nombre}
+                              {" ("}
+                              {obtenerpais("nombre", val2.idp)}
+                              {")"}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    onConfirm={() => {
+                      confirm4();
+                    }}
+                  >
+                    <button className=" text-red-700">Editar</button>
+                  </Popconfirm>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-6 py-3">
+                    Nombre
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Precio (USD)
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    PRG
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Total
+                  </th>
+
+                  <th scope="col" className="px-6 py-3">
+                    <span className="sr-only">Edit</span>
+                  </th>
+                  <th scope="col" className="px-6 py-4 text-right"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {listatemporal.map((val, key) => {
+                  return (
+                    <tr
+                      key={val.id}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {obtenernombre3("nombre", val.idp)}
+                      </th>
+                      <td className="px-6 py-4 text-center">{val.precio}</td>
                       <td className="px-6 py-4">{val.prg}%</td>
 
                       <td className="px-6 py-4 text-right">
-                        <svg
-                          className="w-[24px] h-[24px] hover:text-yellow-600 text-gray-800 dark:text-white cursor-pointer"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          onClick={() => {
-                            setShowModal3(true);
-                            setValoridp(val.id);
-                            setEstado2(1);
-                          }}
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z"
-                            clip-rule="evenodd"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
+                        {val.total.toFixed(2)}
+                        {" " + val.abreviacion}
                       </td>
+                      <td className="px-6 py-4 text-right"></td>
                       <td className="px-6 py-4 text-right">
                         <svg
                           className="w-[24px] h-[24px] hover:text-red-700 cursor-pointer text-gray-800 dark:text-white"
@@ -514,8 +752,7 @@ const juegos = () => {
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           onClick={() => {
-                            setShowModal4(true);
-                            setValoridp(val.id);
+                            selectdelete(val.id);
                           }}
                         >
                           <path
@@ -528,6 +765,51 @@ const juegos = () => {
                     </tr>
                   );
                 })}
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td className="px-6 py-4 text-right font-bold">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        guardarfacturar();
+                      }}
+                      class="text-white bg-[#3d8b2c] hover:bg-[#5dba48]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#5dba48]/55 me-2 mb-2"
+                    >
+                      <svg
+                        class="w-[16px] h-[16px] text-white"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          fill-rule="evenodd"
+                          d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z"
+                          clip-rule="evenodd"
+                        />
+                        <path
+                          fill="currentColor"
+                          d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0 .288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z"
+                        />
+                      </svg>{" "}
+                      Facturar
+                    </button>
+                  </td>
+                  <td colSpan="2" className="px-6 py-4 text-right font-bold">
+                    Total a Pagar
+                  </td>
+
+                  <td className="px-6 py-4 text-center text-blue-800 font-bold">
+                    {obtenertotalgeneral()}
+                    {" " + abreviacion}
+                  </td>
+
+                  <td colSpan={2} className="px-6 py-4 text-right">
+                    {" "}
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -542,149 +824,12 @@ const juegos = () => {
                 {/*header*/}
                 <div className=" bg-cyan-900 flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 className="text-xl text-blue-200 pb-0 font-bold">
-                    {estado === 0 ? (
-                      <div>Nuevo Registro</div>
-                    ) : (
-                      <div>Actualizar Registro</div>
-                    )}
+                    Detalles de Facturacion
                   </h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit} class="p-0 md:p-5" ref={form}>
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-                      <div class="col-span-2">
-                        <label
-                          for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Nombre del Juego
-                        </label>
-                        {estado == 1 ? (
-                          <input
-                            type="text"
-                            name="nombre"
-                            id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Ingresa el Nombre Aqui"
-                            required=""
-                            defaultValue={obtenernombre("nombre")}
-                            onChange={handleChange}
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            name="nombre"
-                            id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Ingresa el Nombre Aqui"
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange}
-                          />
-                        )}
-                      </div>
-                      <div class="col-span-2 sm:col-span-1">
-                        <label
-                          for="prg"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          PRG
-                        </label>
-                        {estado == 1 ? (
-                          <input
-                            type="number"
-                            name="prg"
-                            max="100"
-                            id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={obtenernombre("prg")}
-                            onChange={handleChange}
-                          />
-                        ) : (
-                          <input
-                            type="number"
-                            name="prg"
-                            max="100"
-                            id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange}
-                          />
-                        )}
-                      </div>
-                      <div class="col-span-2 sm:col-span-1">
-                        <label
-                          for="categoria"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Categoria
-                        </label>
-                        <select
-                          id="categoria"
-                          name="categoria"
-                          onChange={handleChange}
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        >
-                          {estado == 1 ? (
-                            <>
-                              {obtenernombre("categoria") == "Mobile Games" ? (
-                                <option value="Mobile Games" selected>
-                                  Mobile Games
-                                </option>
-                              ) : (
-                                <option value="Mobile Games">
-                                  Mobile Games
-                                </option>
-                              )}
-                              {obtenernombre("categoria") == "PC Games" ? (
-                                <option value="PC Games" selected>
-                                  PC Games
-                                </option>
-                              ) : (
-                                <option value="PC Games">PC Games</option>
-                              )}
-                              {obtenernombre("categoria") == "Gift Card" ? (
-                                <option value="Gift Card" selected>
-                                  Gift Card
-                                </option>
-                              ) : (
-                                <option value="Gift Card">Gift Card</option>
-                              )}
-                              {obtenernombre("categoria") == "Servicios" ? (
-                                <option value="Servicios" selected>
-                                  Servicios
-                                </option>
-                              ) : (
-                                <option value="Servicios">Servicios</option>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              <option value="Mobile Games" selected>
-                                Mobile Games
-                              </option>
-                              <option value="PC Games">PC Games</option>
-                              <option value="Gift Card">Gift Card</option>
-                              <option value="Servicios">Servicios</option>
-                            </>
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  </form>
+                  REPORTE ANTES DE ENVIAR
                 </div>
                 {/*footer*/}
                 <div className="flex bg-cyan-900 items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
@@ -695,53 +840,7 @@ const juegos = () => {
                   >
                     Cerrar
                   </button>
-                  {estado == 1 ? (
-                    <button
-                      type="submit"
-                      onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
-                    >
-                      <svg
-                        class="w-[24px] h-[24px] text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.414A2 2 0 0 0 20.414 6L18 3.586A2 2 0 0 0 16.586 3H5Zm10 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7V5h8v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      &nbsp;&nbsp;Actualizar
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
-                    >
-                      <svg
-                        class="w-[24px] h-[24px] text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.414A2 2 0 0 0 20.414 6L18 3.586A2 2 0 0 0 16.586 3H5Zm10 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7V5h8v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      &nbsp;&nbsp;Guardar
-                    </button>
-                  )}
+                  pie de pagina
                 </div>
               </div>
             </div>
@@ -1059,4 +1158,4 @@ const juegos = () => {
   );
 };
 
-export default juegos;
+export default facturar;

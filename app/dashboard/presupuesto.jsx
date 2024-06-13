@@ -13,14 +13,23 @@ const presupuesto = () => {
   const [showModal4, setShowModal4] = React.useState(false);
 
   const [listapaquetes, setListapaquetes] = React.useState([]);
+  const [listapaquetescompra, setListapaquetescompra] = React.useState([]);
   const [listajuegos, setListajuegos] = React.useState([]);
-  const [valorid, setValorid] = React.useState(0);
+  const [valorid, setValorid] = React.useState(0); //ID DEL JUEGO
+  const [idpaisv, setIdpaisv] = React.useState(0); //ID DEL PAIS DE VENTA
+  const [idpaisc, setIdpaisc] = React.useState(0); //ID DEL PAIS DE COMPRA
+  const [porcentajeazul, setPorcentajeazul] = React.useState(0); //PORCENTAJE DEL JUEGO
   const [valorid2, setValorid2] = React.useState(0);
   const [valoridp, setValoridp] = React.useState(0);
+
+  const [precioscompra, setprecioscompra] = React.useState([]);
 
   const [nombrepais, setNombrepais] = React.useState("");
   const [preciopais, setPreciopais] = React.useState(0);
   const [abreviacion, setAbreviacion] = React.useState("");
+
+  const [listapais, setListapais] = React.useState([]);
+  const [listapais2, setListapais2] = React.useState([]);
 
   const [estado, setEstado] = React.useState(false);
   const [estado2, setEstado2] = React.useState(false);
@@ -50,16 +59,89 @@ const presupuesto = () => {
   };
 
   const enviarsms = () => {
+    var text = "";
+    if (valorid == 0) {
+      msjsave("No se ha seleccionado un Juego", "error");
+      return null;
+    }
+    var juego = "%2A" + obtenernombre2("nombre") + "%2A%0A%0A";
+    juego = juego.replace(/\s+/g, "%20");
+    var paquetestitle = "%2APAQUETES%2A%0A";
+    console.log(listapaquetes);
+    if (preciopais == 0) {
+      msjsave("Debes seleccionar un Pais o Moneda", "error");
+      return null;
+    }
+    var descripcion = "";
+    var precio = 0;
+    for (let i = 0; i < listapaquetes.length; i++) {
+      precio =
+        ((parseFloat(listapaquetes[i].precio) * parseFloat(preciopais)) / 100) *
+          parseFloat(listapaquetes[i].prg) +
+        parseFloat(listapaquetes[i].precio) * parseFloat(preciopais);
+      precio = precio.toFixed(2);
+      console.log(precio);
+      descripcion +=
+        "%F0%9F%92%8E%09%2A" +
+        listapaquetes[i].nombre +
+        "%2A%09%E2%9E%A1%EF%B8%8F%09" +
+        abreviacion +
+        "%20" +
+        precio +
+        "%0A";
+    }
+    var metodo =
+      "%0A%2AMETODOS%20DE%20PAGO%3A%20%20Banco%20de%20Venezuela%2A%0A%0A";
+    text = juego + paquetestitle + descripcion + metodo;
+    text = text.replace(/\s+/g, "%20");
+
     // window.location =
     //   "https://wa.me/584126515046?text=Hola%20a%20todos%20como%20estan%20%2Abendiciones%2A%0Aeste%20mensaje%20es%20relevant%20para%20todos%20los%20usuarios%0Adel%20congreo%0Anuevo%20remanente%F0%9F%98%8D";
     //window.location = "whatsapp://send?text=texto%20con%20URL";
-    window.location =
-      "https://wa.me/?text=Hola%20a%20todos%20como%20estan%20%2Abendiciones%2A%0Aeste%20mensaje%20es%20relevant%20para%20todos%20los%20usuarios%0Adel%20congreo%0Anuevo%20remanente%F0%9F%98%8D";
+    window.location = "https://wa.me/?text=" + text;
+  };
+
+  const getprecioscompra = () => {
+    axios.get(`api/precios/${valorid}/${idpaisc}`).then((response) => {
+      console.log(response.data);
+      if (response.data.status == 400) {
+        setprecioscompra([]);
+      } else {
+        setprecioscompra(response.data);
+      }
+    });
   };
 
   const getpaquetes = () => {
-    axios.get(`api/paquetes/${valorid}/`).then((response) => {
+    axios.get(`api/paquetes/${valorid}`).then((response) => {
       setListapaquetes(response.data);
+    });
+  }; //LISTO
+
+  const getpaquetescompra = () => {
+    axios.get(`api/paq/${valorid}/${idpaisc}/${idpaisv}`).then((response) => {
+      if (response.data.status == 400) {
+        setListapaquetescompra([]);
+      } else {
+        setListapaquetescompra(response.data);
+      }
+      console.log(idpaisc);
+      console.log(idpaisv);
+      console.log(listapaquetescompra);
+      console.log(typeof listapaquetescompra); // debería ser "object"
+      console.log(Array.isArray(listapaquetescompra)); // debería ser true
+    });
+  }; //LISTO
+
+  const getpaises = () => {
+    axios.get(`api/paises/`).then((response) => {
+      setListapais(response.data);
+    });
+  }; //LISTO
+
+  const getpaises2 = () => {
+    axios.get(`api/paises/`).then((response) => {
+      setListapais2(response.data);
     });
   }; //LISTO
 
@@ -88,13 +170,29 @@ const presupuesto = () => {
     });
   }; //LISTO
 
-  const obtenerpais = (id) => {
-    for (let i = 0; i < listapaquetes.length; i++) {
-      if (listapaquetes[i].id == id) {
-        return listapaquetes[i].nombre;
+  const obtenerpais = (tipo, id) => {
+    for (let i = 0; i < listapais.length; i++) {
+      if (tipo == "nombre" && listapais[i].id == id) {
+        return listapais[i].nombre;
+      }
+      if (tipo == "precio" && listapais[i].id == id) {
+        return listapais[i].precio;
+      }
+      if (tipo == "abreviacion" && listapais[i].id == id) {
+        return listapais[i].abreviacion;
       }
     }
-  }; //LISTO
+  };
+
+  const obtenerpreciocompra = (tipo, id) => {
+    for (let i = 0; i < precioscompra.length; i++) {
+      if (tipo == "precio" && precioscompra[i].idp == id) {
+        return precioscompra[i].preciodos;
+      }
+    }
+  };
+
+  //LISTO
 
   const obtenerprecio = (precio) => {
     console.log(precio);
@@ -123,6 +221,15 @@ const presupuesto = () => {
     return contador;
   };
 
+  const tomarporcentaje = () => {
+    setPorcentajeazul(0);
+    for (let i = 0; i < listajuegos.length; i++) {
+      if (listajuegos[i].id == valorid) {
+        setPorcentajeazul(listajuegos[i].prg);
+      }
+    }
+  };
+
   const contarsinasignar = () => {
     var contador = 0;
     for (let i = 0; i < listajuegos.length; i++) {
@@ -138,9 +245,9 @@ const presupuesto = () => {
 
   const eliminarpaquete = () => {};
 
-  const obtenernombre = (tipo) => {
+  const obtenernombre = (tipo, id) => {
     for (let i = 0; i < listapaquetes.length; i++) {
-      if (listapaquetes[i].id == valorid) {
+      if (listapaquetes[i].id == id) {
         if (tipo == "nombre") {
           return listapaquetes[i].nombre;
         }
@@ -158,8 +265,9 @@ const presupuesto = () => {
 
   const obtenernombre2 = (tipo) => {
     for (let i = 0; i < listajuegos.length; i++) {
-      if (listajuegos[i].id == valoridp) {
+      if (listajuegos[i].id == valorid) {
         if (tipo == "nombre") {
+          console.log(listajuegos[i].nombre);
           return listajuegos[i].nombre;
         }
         if (tipo == "precio") {
@@ -210,21 +318,21 @@ const presupuesto = () => {
   const form = useRef(null);
   const form2 = useRef(null);
 
+  //actualiza precio de venta
   const confirm = async (id) => {
-    console.log(id);
-    const precioa = document.getElementById("prg" + id).value;
+    const preciov = document.getElementById("preciovf" + id).value;
     const data = {
-      prg: precioa,
+      preciov: preciov,
     };
 
-    const res = await axios.put(`/api/paquetes/${id}/${id}`, data);
+    const res = await axios.put(`/api/paq/${id}`, data);
     console.log(res);
     if (res.request.status === 200) {
       console.log("GUARDADO");
 
       msjsave("Precio Actualizado con Exito", "save");
 
-      getpaquetes();
+      getpaquetescompra();
     }
   };
 
@@ -246,14 +354,41 @@ const presupuesto = () => {
     }
   };
 
+  //asigna pais venta
+  const confirm3 = async () => {
+    const asignar2 = document.getElementById("paisbase2").value;
+    console.log(asignar2);
+    setIdpaisv(asignar2);
+    getpaquetescompra();
+  };
+
+  //asigna pais compra
+  const confirm4 = async () => {
+    console.log("SE EJECUTO EL CONFIRM4");
+    const asignar = document.getElementById("paisbase").value;
+    console.log(asignar);
+    setIdpaisc(asignar);
+    getpaquetescompra();
+  };
+
   useEffect(() => {
     getjuegos();
+    getpaises();
+    getpaises2();
+    //getpaquetescompra();
   }, []);
 
   useEffect(() => {
     getpaquetes();
-    getasignacion();
+    //getpaquetescompra();
+    //getasignacion();
   }, [valorid]);
+
+  useEffect(() => {
+    getpaquetescompra();
+    tomarporcentaje();
+    getprecioscompra();
+  }, [idpaisv, idpaisc, valorid]);
 
   useEffect(() => {
     getjuegos();
@@ -266,7 +401,7 @@ const presupuesto = () => {
   return (
     <div>
       <div className="flex place-content-center max-md:flex-col">
-        <div className="p-4  w-[80%]">
+        <div className="p-4  w-[80%] max-md:w-[100%]">
           <h2 className="text-blue-200 text-center pb-4 font-bold">
             CREAR UN PRESUPUESTO
           </h2>
@@ -322,68 +457,132 @@ const presupuesto = () => {
                     Nombre del Paquete
                   </th>
                   <th scope="col" className="px-6 py-3 text-center">
-                    Precio (USD)
+                    Precio Venta:<br></br>
+                    <Popconfirm
+                      title="Pais de Venta"
+                      okText="Actualizar"
+                      showCancel={false}
+                      description=<div>
+                        <select id={`paisbase2`}>
+                          <option value="0" selected>
+                            Seleccione un Pais
+                          </option>
+                          {listapais.map((val2, key) => {
+                            return (
+                              <option value={val2.id}>{val2.nombre}</option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      onConfirm={() => {
+                        confirm3();
+                      }}
+                    >
+                      <span className="text-blue-500 cursor-pointer">
+                        {obtenerpais("nombre", idpaisv)} (
+                        {obtenerpais("precio", idpaisv)})
+                      </span>
+                    </Popconfirm>
                   </th>
                   <th scope="col" className="px-6 py-3 text-center">
                     PRG
                   </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    PR
+                  </th>
 
                   <th scope="col" className="px-6 py-3 text-center">
-                    Total a Presupuestar:<br></br>
-                    <span className="text-blue-500">
-                      {nombrepais} ({preciopais})
-                    </span>
+                    Precio Base:<br></br>
+                    <Popconfirm
+                      title="Pais de Compra"
+                      okText="Actualizar"
+                      showCancel={false}
+                      description=<div>
+                        <select id={`paisbase`}>
+                          <option value="0" selected>
+                            Seleccione un Pais
+                          </option>
+                          {listapais2.map((val2, key) => {
+                            return (
+                              <option value={val2.id}>{val2.nombre}</option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      onConfirm={() => {
+                        confirm4();
+                      }}
+                    >
+                      <span className="text-blue-500 cursor-pointer">
+                        {obtenerpais("nombre", idpaisc)} (
+                        {obtenerpais("precio", idpaisc)})
+                      </span>
+                    </Popconfirm>
                   </th>
                   <th scope="col" className="px-6 py-3 text-center">
-                    Ganancia con:<br></br>
-                    <span className="text-blue-500">
-                      {nombrepais} ({preciopais})
-                    </span>
+                    Ganancia<br></br>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {listapaquetes.map((val, key) => {
+                {listapaquetescompra.map((val2, key) => {
                   return (
                     <tr
-                      key={val.id}
+                      key={val2.id}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                       <th
                         scope="row"
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
-                        {val.nombre}
+                        {obtenernombre("nombre", val2.idp)}
                       </th>
-                      <td className="px-6 py-4 text-center">{val.precio}</td>
                       <td className="px-6 py-4 text-center">
                         <Popconfirm
-                          title="Cambiar PRG"
+                          title="Cambiar Precio"
                           okText="Actualizar"
                           showCancel={false}
                           description=<input
                             type="text"
-                            id={`prg${val.id}`}
+                            id={`preciovf${val2.id}`}
                             className=" border-2 w-full"
-                            defaultValue={val.prg}
+                            defaultValue={val2.preciov}
                           />
                           onConfirm={() => {
-                            confirm(val.id);
+                            confirm(val2.id);
                           }}
                         >
-                          <Button type="primary">{val.prg}%</Button>
+                          <Button type="primary">
+                            {val2.preciov} {obtenerpais("abreviacion", idpaisv)}
+                          </Button>
                         </Popconfirm>
                       </td>
+                      <td className="px-6 py-4 text-center"></td>
 
+                      <td className="px-6 py-4 text-center"></td>
                       <td className="px-6 py-4 text-center">
-                        {obtenerprecio(val.precio)} {abreviacion}
+                        {obtenerpreciocompra("precio", val2.idp)}{" "}
+                        {obtenerpais("abreviacion", idpaisc)}
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        {obtenerganancia(val.precio, val.prg)} {abreviacion}
-                      </td>
+                      <td className="px-6 py-4 text-center"></td>
                     </tr>
                   );
                 })}
+
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  ></th>
+                  <td className="px-6 py-4 text-center"></td>
+                  <td className="px-6 py-4 text-center"></td>
+
+                  <td className="px-6 py-4 text-center font-bold text-blue-400">
+                    {porcentajeazul}%
+                  </td>
+                  <td className="px-6 py-4 text-center"></td>
+                  <td className="px-6 py-4 text-center"></td>
+                </tr>
               </tbody>
             </table>
           </div>

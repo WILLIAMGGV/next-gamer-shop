@@ -14,6 +14,13 @@ const paises = () => {
 
   const [listapaises, setListapaises] = React.useState([]);
   const [listaasignacion, setListaasignacion] = React.useState([]);
+  const [listapaquetes, setListapaquetes] = React.useState([]);
+
+  const [listajuegos, setListajuegos] = React.useState([]);
+
+  const [idjuego, setIdjuego] = React.useState(0);
+  const [idpais, setIdpais] = React.useState(0);
+
   const [valorid, setValorid] = React.useState(0);
   const [valorid2, setValorid2] = React.useState(0);
   const [valoridp, setValoridp] = React.useState(0);
@@ -51,6 +58,18 @@ const paises = () => {
     });
   }; //LISTO
 
+  const getjuegos = () => {
+    axios.get("api/juegos/").then((response) => {
+      setListajuegos(response.data);
+    });
+  }; //LISTO
+
+  const getpaquetes = () => {
+    axios.get(`api/paquetes/${idjuego}/`).then((response) => {
+      setListapaquetes(response.data);
+    });
+  }; //LISTO
+
   const obtenerpais = (id) => {
     for (let i = 0; i < listapaises.length; i++) {
       if (listapaises[i].id == id) {
@@ -59,9 +78,22 @@ const paises = () => {
     }
   }; //LISTO
 
+  const obtenerpaquete = (id) => {
+    for (let i = 0; i < listapaquetes.length; i++) {
+      if (listapaquetes[i].id == id) {
+        return listapaquetes[i].nombre;
+      }
+    }
+  }; //LISTO
+
   const getasignacion = () => {
-    axios.get(`api/asignacion/`).then((response) => {
-      setListaasignacion(response.data);
+    axios.get(`api/precios/${idjuego}/${idpais}`).then((response) => {
+      console.log(response.data);
+      if (response.data.status == 400) {
+        setListaasignacion([]);
+      } else {
+        setListaasignacion(response.data);
+      }
     });
   };
 
@@ -104,6 +136,31 @@ const paises = () => {
           nombre: listapaises[i].nombre,
           precio: listapaises[i].precio,
         });
+      }
+    }
+    return null;
+  }; //LISTO
+
+  const obtenerjuego = (tipo) => {
+    for (let i = 0; i < listajuegos.length; i++) {
+      if (listajuegos[i].id == idjuego) {
+        if (tipo == "nombre") {
+          return listajuegos[i].nombre;
+        }
+      }
+    }
+    return null;
+  }; //LISTO
+
+  const obtenerpaisn = (tipo) => {
+    for (let i = 0; i < listapaises.length; i++) {
+      if (listapaises[i].id == idpais) {
+        if (tipo == "nombre") {
+          return listapaises[i].nombre;
+        }
+        if (tipo == "abreviacion") {
+          return listapaises[i].abreviacion;
+        }
       }
     }
     return null;
@@ -165,6 +222,14 @@ const paises = () => {
       ...paises,
       [e.target.name]: e.target.value,
     });
+  }; //LISTO
+
+  const handleChangejuego = (e) => {
+    setIdjuego(e.target.value);
+  }; //LISTO
+
+  const handleChangepais = (e) => {
+    setIdpais(e.target.value);
   }; //LISTO
 
   const handleChange2 = (e) => {
@@ -280,19 +345,27 @@ const paises = () => {
     }
   };
 
-  const confirm2 = async (id) => {
-    console.log(id);
-    const asignar = document.getElementById("asignar" + id).value;
-    const data = {
-      idp: asignar,
-    };
+  const confirm2 = async () => {
+    const asignar = document.getElementById("juegose").value;
+    setIdjuego(asignar);
+  };
 
-    const res = await axios.put(`/api/asignacion/${id}`, data);
+  const confirm3 = async () => {
+    const asignar = document.getElementById("asignarpais").value;
+    setIdpais(asignar);
+  };
+
+  const updateprecio = async (id) => {
+    var precioc = document.getElementById("precioc" + id).value;
+    const data = {
+      precioc: precioc,
+    };
+    const res = await axios.put(`/api/precios/${id}`, data);
     console.log(res);
     if (res.request.status === 200) {
       console.log("GUARDADO");
 
-      msjsave("Asignacion con Exito", "save");
+      msjsave("Registro Actualizado con Exito", "save");
 
       getasignacion();
     }
@@ -300,11 +373,17 @@ const paises = () => {
 
   useEffect(() => {
     getpaises();
+    getjuegos();
   }, []);
 
   useEffect(() => {
     obtenerregistro();
   }, [valorid]);
+
+  useEffect(() => {
+    getasignacion();
+    getpaquetes();
+  }, [idjuego, idpais]);
 
   useEffect(() => {
     getasignacion();
@@ -435,12 +514,53 @@ const paises = () => {
             </div>
             <div className="flex flex-col place-content-center">
               <div className=" text-sm font-bold">
-                Asignados (
-                <span className="text-green-500">{contarasignados()}</span>)
+                <Popconfirm
+                  title="Seleccionar Juego"
+                  okText="Aceptar"
+                  showCancel={false}
+                  description=<div>
+                    <select id="juegose" onChange={handleChangejuego}>
+                      <option value="0" selected>
+                        Sin Seleccion
+                      </option>
+                      {listajuegos.map((val, key) => {
+                        return <option value={val.id}>{val.nombre}</option>;
+                      })}
+                    </select>
+                  </div>
+                  onConfirm={() => {
+                    confirm2();
+                  }}
+                >
+                  <span className="text-red-500">
+                    Juego:{" "}
+                    <span className="text-black">{obtenerjuego("nombre")}</span>
+                  </span>{" "}
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                </Popconfirm>
               </div>
               <div className=" text-sm font-bold">
-                Sin Asignar (
-                <span className="text-red-500">{contarsinasignar()}</span>)
+                <Popconfirm
+                  title="Seleccionar Pais"
+                  okText="Aceptar"
+                  showCancel={false}
+                  description=<div>
+                    <select id="asignarpais" onChange={handleChangepais}>
+                      {listapaises.map((val2, key) => {
+                        return <option value={val2.id}>{val2.nombre}</option>;
+                      })}
+                    </select>
+                  </div>
+                  onConfirm={() => {
+                    confirm3();
+                  }}
+                >
+                  <span className="text-red-500">
+                    Pais:{" "}
+                    <span className="text-black">{obtenerpaisn("nombre")}</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                  </span>
+                </Popconfirm>
               </div>
             </div>
           </div>
@@ -452,11 +572,10 @@ const paises = () => {
                     Nombre
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Pais Asignado
+                    Precio de Compra
                   </th>
-
                   <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">Edit</span>
+                    Precio (2%)
                   </th>
                 </tr>
               </thead>
@@ -471,51 +590,32 @@ const paises = () => {
                         scope="row"
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
-                        {val.nombre}
+                        {obtenerpaquete(val.idp)}
                       </th>
-                      <td className="px-6 py-4">{obtenerpais(val.idp)}</td>
-
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-6 py-4 text-center">
                         <Popconfirm
-                          title="Asignar Pais"
+                          title="Precio de Compra"
                           okText="Actualizar"
                           showCancel={false}
                           description=<div>
-                            <select id={`asignar${val.id}`}>
-                              {listapaises.map((val2, key) => {
-                                return (
-                                  <option value={val2.id}>{val2.nombre}</option>
-                                );
-                              })}
-                            </select>
+                            <input
+                              id={`precioc${val.id}`}
+                              type="text"
+                              defaultValue={val.precioc}
+                            />
                           </div>
                           onConfirm={() => {
-                            confirm2(val.id);
+                            updateprecio(val.id);
                           }}
                         >
                           <Button type="primary">
-                            <svg
-                              className="w-[24px] h-[24px] text-white cursor-pointer"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z"
-                                clip-rule="evenodd"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
+                            {val.precioc} {obtenerpaisn("abreviacion")}
                           </Button>
                         </Popconfirm>
+                      </td>
+
+                      <td className="px-6 py-4 text-center">
+                        {val.preciodos} {obtenerpaisn("abreviacion")}
                       </td>
                     </tr>
                   );

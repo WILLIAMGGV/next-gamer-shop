@@ -9,6 +9,7 @@ import Juegos from "./juegos";
 import Paises from "./paises";
 import Presupuesto from "./presupuesto";
 import Bancos from "./bancos";
+import Facturar from "./facturar";
 
 function Dashboard() {
   const router = useRouter();
@@ -38,7 +39,7 @@ function Dashboard() {
     <div className="m-0 h-full w-full p-0  bg-slate-900">
       <div className=" bg-black p-2 h-28 w-full flex place-content-between items-center border-b-2 border-b-blue-700">
         <div className="m-0">
-          <Image src={logo} className="h-full w-36" />
+          <Image src={logo} alt="logo" priority className="h-full w-36" />
         </div>
 
         <div className="flex">
@@ -93,6 +94,7 @@ function Dashboard() {
         {selectmenu == "paises" ? <Paises /> : <></>}
         {selectmenu == "presupuesto" ? <Presupuesto /> : <></>}
         {selectmenu == "bancos" ? <Bancos /> : <></>}
+        {selectmenu == "facturar" ? <Facturar /> : <></>}
 
         <div>
           <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">

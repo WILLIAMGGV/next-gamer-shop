@@ -137,8 +137,10 @@ const menu = ({ opcion }) => {
 
       <div className="m-2">
         <a
-          href="#"
-          class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          onClick={() => {
+            opcion("facturar");
+          }}
+          class=" cursor-pointer w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
             class="w-[32px] h-[32px] text-white"
@@ -151,14 +153,15 @@ const menu = ({ opcion }) => {
           >
             <path
               fill-rule="evenodd"
-              d="M12 5a7 7 0 0 0-7 7v1.17c.313-.11.65-.17 1-.17h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H6a3 3 0 0 1-3-3v-6a9 9 0 0 1 18 0v6a3 3 0 0 1-3 3h-2a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h2c.35 0 .687.06 1 .17V12a7 7 0 0 0-7-7Z"
+              d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
               clip-rule="evenodd"
             />
           </svg>
+
           <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Registro</div>
+            <div class="mb-1 text-xs">&nbsp;&nbsp; Generar</div>
             <div class="-mt-1 font-sans text-sm font-semibold">
-              &nbsp;&nbsp; Juegos
+              &nbsp;&nbsp; Factura
             </div>
           </div>
         </a>
@@ -180,14 +183,15 @@ const menu = ({ opcion }) => {
           >
             <path
               fill-rule="evenodd"
-              d="M12 5a7 7 0 0 0-7 7v1.17c.313-.11.65-.17 1-.17h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H6a3 3 0 0 1-3-3v-6a9 9 0 0 1 18 0v6a3 3 0 0 1-3 3h-2a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h2c.35 0 .687.06 1 .17V12a7 7 0 0 0-7-7Z"
+              d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm-1 9a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Zm2-5a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 4a1 1 0 1 0-2 0v3a1 1 0 1 0 2 0v-3Z"
               clip-rule="evenodd"
             />
           </svg>
+
           <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Registro</div>
+            <div class="mb-1 text-xs">&nbsp;&nbsp; Informe</div>
             <div class="-mt-1 font-sans text-sm font-semibold">
-              &nbsp;&nbsp; Juegos
+              &nbsp;&nbsp; Ventas
             </div>
           </div>
         </a>
