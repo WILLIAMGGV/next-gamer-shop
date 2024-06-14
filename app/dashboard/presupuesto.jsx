@@ -4,7 +4,7 @@ import React, { useRef, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Button, Popconfirm } from "antd";
+import { Button, Popconfirm, Tooltip } from "antd";
 
 const presupuesto = () => {
   const [showModal, setShowModal] = React.useState(false);
@@ -182,14 +182,54 @@ const presupuesto = () => {
         return listapais[i].abreviacion;
       }
     }
+    if (tipo == "nombre") {
+      return "Seleccionar Pais";
+    }
   };
 
   const obtenerpreciocompra = (tipo, id) => {
-    for (let i = 0; i < precioscompra.length; i++) {
-      if (tipo == "precio" && precioscompra[i].idp == id) {
-        return precioscompra[i].preciodos;
+    var abreviacion = "";
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisc) {
+        abreviacion = listapais[i].abreviacion;
       }
     }
+
+    for (let i = 0; i < precioscompra.length; i++) {
+      if (tipo == "precio" && precioscompra[i].idp == id) {
+        return precioscompra[i].preciodos + " " + abreviacion;
+      }
+    }
+  };
+
+  const obtenerprecioc = (idp) => {
+    var dolaractual = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisv) {
+        dolaractual = parseFloat(listapais[i].precio);
+      }
+    }
+
+    var dolarcompra = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisc) {
+        dolarcompra = parseFloat(listapais[i].precio);
+      }
+    }
+
+    for (let i = 0; i < precioscompra.length; i++) {
+      if (precioscompra[i].idp == idp) {
+        console.log(precioscompra[i].preciodos);
+
+        return (
+          (parseFloat(dolaractual) / parseFloat(dolarcompra)) *
+          parseFloat(precioscompra[i].preciodos)
+        ).toFixed(2);
+      }
+    }
+    return null;
   };
 
   //LISTO
@@ -354,6 +394,23 @@ const presupuesto = () => {
     }
   };
 
+  const confirm5 = async () => {
+    const asignar = document.getElementById("porcentajea").value;
+    const data = {
+      prg: asignar,
+    };
+    console.log(data);
+    const res = await axios.put(`/api/juego/${valorid}`, data);
+    console.log(res);
+    if (res.request.status === 200) {
+      console.log("GUARDADO");
+
+      msjsave("Porcentaje Modificado con exito", "save");
+      getjuegos();
+      getprecioscompra();
+    }
+  };
+
   //asigna pais venta
   const confirm3 = async () => {
     const asignar2 = document.getElementById("paisbase2").value;
@@ -369,6 +426,115 @@ const presupuesto = () => {
     console.log(asignar);
     setIdpaisc(asignar);
     getpaquetescompra();
+  };
+
+  const precioreal = (idp) => {
+    var dolaractual = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisv) {
+        dolaractual = parseFloat(listapais[i].precio);
+      }
+    }
+
+    var dolarcompra = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisc) {
+        dolarcompra = parseFloat(listapais[i].precio);
+      }
+    }
+
+    for (let i = 0; i < precioscompra.length; i++) {
+      if (precioscompra[i].idp == idp) {
+        console.log(precioscompra[i].preciodos);
+
+        return (
+          ((parseFloat(dolaractual) / parseFloat(dolarcompra)) *
+            parseFloat(precioscompra[i].preciodos) *
+            parseFloat(porcentajeazul)) /
+            100 +
+          (parseFloat(dolaractual) / parseFloat(dolarcompra)) *
+            parseFloat(precioscompra[i].preciodos)
+        ).toFixed(2);
+      }
+    }
+    return null;
+  };
+
+  const obtenerprg = (idp) => {
+    var precioventa = 0;
+    var preciocompra = 0;
+    for (let i = 0; i < listapaquetescompra.length; i++) {
+      if (listapaquetescompra[i].idp == idp) {
+        precioventa = parseFloat(listapaquetescompra[i].preciov);
+      }
+    }
+
+    var dolaractual = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisv) {
+        dolaractual = parseFloat(listapais[i].precio);
+      }
+    }
+
+    var dolarcompra = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisc) {
+        dolarcompra = parseFloat(listapais[i].precio);
+      }
+    }
+
+    for (let i = 0; i < precioscompra.length; i++) {
+      if (precioscompra[i].idp == idp) {
+        var preciocompra =
+          (parseFloat(dolaractual) / parseFloat(dolarcompra)) *
+          parseFloat(precioscompra[i].preciodos);
+      }
+    }
+
+    return (
+      (parseFloat(precioventa) / parseFloat(preciocompra) - 1) *
+      100
+    ).toFixed(2);
+  };
+
+  const ganancia = (idp) => {
+    var precioventa = 0;
+    var preciocompra = 0;
+    for (let i = 0; i < listapaquetescompra.length; i++) {
+      if (listapaquetescompra[i].idp == idp) {
+        precioventa = parseFloat(listapaquetescompra[i].preciov);
+      }
+    }
+
+    var dolaractual = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisv) {
+        dolaractual = parseFloat(listapais[i].precio);
+      }
+    }
+
+    var dolarcompra = 0;
+
+    for (let i = 0; i < listapais.length; i++) {
+      if (listapais[i].id == idpaisc) {
+        dolarcompra = parseFloat(listapais[i].precio);
+      }
+    }
+
+    for (let i = 0; i < precioscompra.length; i++) {
+      if (precioscompra[i].idp == idp) {
+        var preciocompra =
+          (parseFloat(dolaractual) / parseFloat(dolarcompra)) *
+          parseFloat(precioscompra[i].preciodos);
+      }
+    }
+    console.log(preciocompra);
+    return (parseFloat(precioventa) - parseFloat(preciocompra)).toFixed(2);
   };
 
   useEffect(() => {
@@ -388,7 +554,7 @@ const presupuesto = () => {
     getpaquetescompra();
     tomarporcentaje();
     getprecioscompra();
-  }, [idpaisv, idpaisc, valorid]);
+  }, [idpaisv, idpaisc, valorid, listajuegos]);
 
   useEffect(() => {
     getjuegos();
@@ -557,14 +723,30 @@ const presupuesto = () => {
                           </Button>
                         </Popconfirm>
                       </td>
-                      <td className="px-6 py-4 text-center"></td>
-
-                      <td className="px-6 py-4 text-center"></td>
                       <td className="px-6 py-4 text-center">
-                        {obtenerpreciocompra("precio", val2.idp)}{" "}
-                        {obtenerpais("abreviacion", idpaisc)}
+                        {obtenerprg(val2.idp)} %
                       </td>
-                      <td className="px-6 py-4 text-center"></td>
+
+                      <td className="px-6 py-4 text-center">
+                        {precioreal(val2.idp)}{" "}
+                        {obtenerpais("abreviacion", idpaisv)}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <Tooltip
+                          title={obtenerpreciocompra("precio", val2.idp)}
+                          color="black"
+                          key="black"
+                        >
+                          <span className=" text-green-500 font-bold cursor-pointer">
+                            {obtenerprecioc(val2.idp)}{" "}
+                            {obtenerpais("abreviacion", idpaisv)}
+                          </span>
+                        </Tooltip>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {ganancia(val2.idp)}{" "}
+                        {obtenerpais("abreviacion", idpaisv)}
+                      </td>
                     </tr>
                   );
                 })}
@@ -578,7 +760,26 @@ const presupuesto = () => {
                   <td className="px-6 py-4 text-center"></td>
 
                   <td className="px-6 py-4 text-center font-bold text-blue-400">
-                    {porcentajeazul}%
+                    <Popconfirm
+                      title="Cambiar Porcentaje"
+                      okText="Actualizar"
+                      showCancel={false}
+                      description=<input
+                        type="text"
+                        id={`porcentajea`}
+                        className=" border-2 w-full"
+                        defaultValue={porcentajeazul}
+                      />
+                      onConfirm={() => {
+                        confirm5();
+                      }}
+                    >
+                      <Button type="primary">
+                        <span className=" text-cyan-100 font-bold">
+                          {porcentajeazul}%
+                        </span>
+                      </Button>
+                    </Popconfirm>
                   </td>
                   <td className="px-6 py-4 text-center"></td>
                   <td className="px-6 py-4 text-center"></td>

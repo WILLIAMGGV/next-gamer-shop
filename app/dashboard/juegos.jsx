@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EmojiPicker from "emoji-picker-react";
 
 const juegos = () => {
   const [showModal, setShowModal] = React.useState(false);
@@ -25,7 +26,6 @@ const juegos = () => {
   });
   const [paquetes, setPaquetes] = React.useState({
     nombre: "",
-    precio: 0,
     prg: "",
   });
 
@@ -42,6 +42,41 @@ const juegos = () => {
     if (tipodemensaje == "info") {
       toast.info(mensajesave, {});
     }
+  };
+
+  const [selectedEmoji, setSelectedEmoji] = React.useState(null);
+  const [selectedEmoji2, setSelectedEmoji2] = React.useState(null);
+  const [valoremoji, setValoremoji] = React.useState("");
+  const [valoremoji2, setValoremoji2] = React.useState("");
+  const [encodedEmoji2, setEncodedEmoji2] = React.useState("");
+  const [encodedEmoji1, setEncodedEmoji1] = React.useState("");
+
+  const handleSelect = (emoji) => {
+    if (estado2 == 1) {
+      setSelectedEmoji2(emoji);
+      setValoremoji2(emoji.emoji);
+      setEncodedEmoji2(encodeURIComponent(emoji.emoji));
+    } else {
+      setSelectedEmoji(emoji);
+      setValoremoji(emoji.emoji);
+      setEncodedEmoji1(encodeURIComponent(emoji.emoji));
+    }
+
+    const encodedEmoji = encodeURIComponent(emoji.emoji);
+    console.log(`Emoji seleccionado: ${encodedEmoji} ${valoremoji}`);
+    const decodeurl = decodeURIComponent(encodedEmoji);
+    console.log(`Emoji Decodificado: ${decodeurl}`);
+  };
+
+  const handleSelect2 = (emoji) => {
+    setSelectedEmoji2(emoji);
+    setValoremoji2(emoji.emoji);
+    const encodedEmoji = encodeURIComponent(emoji.emoji);
+
+    console.log(`Emoji seleccionado: ${encodedEmoji} ${valoremoji}`);
+    setEncodedEmoji2(encodeURIComponent(emoji.emoji));
+    const decodeurl = decodeURIComponent(encodedEmoji);
+    console.log(`Emoji Decodificado: ${decodeurl}`);
   };
 
   const getjuegos = () => {
@@ -175,7 +210,7 @@ const juegos = () => {
     e.preventDefault();
     if (estado == 0) {
       const res = await axios.post("/api/juegos", juegos);
-      console.log(res);
+      console.log(juegos);
       if (res.request.status === 200) {
         console.log("GUARDADO");
 
@@ -203,6 +238,8 @@ const juegos = () => {
   const handleSubmit2 = async (e) => {
     e.preventDefault();
     if (estado2 == 0) {
+      paquetes.prg = encodedEmoji1;
+      console.log(paquetes);
       const res = await axios.post(`/api/paquetes/${valorid2}/`, paquetes);
       console.log(res);
       if (res.request.status === 200) {
@@ -215,6 +252,7 @@ const juegos = () => {
         getpaquetes();
       }
     } else {
+      paquetes.prg = encodedEmoji2;
       const res = await axios.put(`/api/paquetes/${valoridp}`, paquetes);
       console.log(res);
       if (res.request.status === 200) {
@@ -413,7 +451,7 @@ const juegos = () => {
                 {obtenernombre1("nombre")}
               </div>
               <div className=" text-sm font-bold">
-                Disponibles {listapaquetes.length} Paquetes
+                Disponibles {listapaquetes.length} Paquetes&nbsp;&nbsp;&nbsp;
               </div>
             </div>
           </div>
@@ -424,11 +462,9 @@ const juegos = () => {
                   <th scope="col" className="px-6 py-3">
                     Nombre
                   </th>
+
                   <th scope="col" className="px-6 py-3">
-                    Precio (USD)
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    PRG
+                    Icono
                   </th>
 
                   <th scope="col" className="px-6 py-3">
@@ -474,8 +510,10 @@ const juegos = () => {
                       >
                         {val.nombre}
                       </th>
-                      <td className="px-6 py-4">{val.precio}</td>
-                      <td className="px-6 py-4">{val.prg}%</td>
+
+                      <td className="px-6 py-4">
+                        {decodeURIComponent(val.prg)}
+                      </td>
 
                       <td className="px-6 py-4 text-right">
                         <svg
@@ -564,7 +602,7 @@ const juegos = () => {
                       <div class="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Juego
                         </label>
@@ -595,7 +633,7 @@ const juegos = () => {
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="prg"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900"
                         >
                           PRG
                         </label>
@@ -612,23 +650,25 @@ const juegos = () => {
                             onChange={handleChange}
                           />
                         ) : (
-                          <input
-                            type="number"
-                            name="prg"
-                            max="100"
-                            id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange}
-                          />
+                          <>
+                            <input
+                              type="text"
+                              name="prg"
+                              max="100"
+                              id="prg"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder=""
+                              required=""
+                              defaultValue={""}
+                              onChange={handleChange}
+                            />
+                          </>
                         )}
                       </div>
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="categoria"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Categoria
                         </label>
@@ -837,7 +877,7 @@ const juegos = () => {
                       <div class="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900"
                         >
                           Nombre del Juego
                         </label>
@@ -865,72 +905,59 @@ const juegos = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
-                        <label
-                          for="precio"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Precio
-                        </label>
-                        {estado2 == 1 ? (
-                          <input
-                            type="number"
-                            name="precio"
-                            max="100"
-                            id="precio"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={obtenernombre2("precio")}
-                            onChange={handleChange2}
-                          />
-                        ) : (
-                          <input
-                            type="number"
-                            name="precio"
-                            max="100"
-                            id="precio"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange2}
-                          />
-                        )}
-                      </div>
+
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="prg"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900"
                         >
-                          PRG
+                          ICONO SELECCIONADO
                         </label>
                         {estado2 == 1 ? (
-                          <input
-                            type="number"
-                            name="prg"
-                            max="100"
-                            id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={obtenernombre2("prg")}
-                            onChange={handleChange2}
-                          />
+                          <>
+                            <input
+                              type="hidden"
+                              name="prg"
+                              max="100"
+                              id="prg"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:placeholder-gray-400 "
+                              placeholder=""
+                              required=""
+                              defaultValue={obtenernombre2("prg")}
+                              onChange={handleChange2}
+                            />
+                            <div>
+                              <span className=" text-lg">{valoremoji2}</span>
+                            </div>
+                          </>
                         ) : (
-                          <input
-                            type="number"
-                            name="prg"
-                            max="100"
-                            id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange2}
-                          />
+                          <>
+                            <input
+                              type="hidden"
+                              name="prg"
+                              max="100"
+                              id="prg"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder=""
+                              required=""
+                              defaultValue={valoremoji}
+                              onChange={handleChange2}
+                            />
+                            <div>
+                              <span className=" text-lg">{valoremoji}</span>
+                            </div>
+                          </>
                         )}
                       </div>
+                    </div>
+                    <div>
+                      <EmojiPicker
+                        open="false"
+                        searchDisabled="false"
+                        size="12"
+                        reactionsDefaultOpen={true}
+                        onEmojiClick={handleSelect}
+                      />
                     </div>
                   </form>
                 </div>

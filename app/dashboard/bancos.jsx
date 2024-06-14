@@ -466,7 +466,7 @@ const bancos = () => {
                       <div class="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Banco
                         </label>
@@ -497,7 +497,7 @@ const bancos = () => {
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="cuenta"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Cuenta
                         </label>
@@ -530,7 +530,7 @@ const bancos = () => {
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="tipo"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Tipo
                         </label>
@@ -563,7 +563,7 @@ const bancos = () => {
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="idp"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Pais
                         </label>

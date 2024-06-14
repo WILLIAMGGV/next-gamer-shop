@@ -27,14 +27,12 @@ export async function POST(request, { params }) {
 
     const result = await conn.query("INSERT INTO paquetes SET ?", {
       nombre: nombre,
-      precio: precio,
       prg: prg,
       idj: params.idj,
     });
 
     return NextResponse.json({
       nombre: nombre,
-      precio: precio,
       prg: prg,
       idj: params.idj,
       id: result.insertId,
@@ -87,7 +85,6 @@ export async function PUT(request, { params }) {
 
     const updateData = {
       nombre: data.nombre,
-      precio: data.precio,
       prg: data.prg,
     };
 

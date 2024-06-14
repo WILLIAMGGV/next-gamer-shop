@@ -656,7 +656,7 @@ const paises = () => {
                       <div class="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Pais
                         </label>
@@ -687,7 +687,7 @@ const paises = () => {
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="precio"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Precio del Dolar Actual
                         </label>
@@ -720,7 +720,7 @@ const paises = () => {
                       <div class="col-span-2 sm:col-span-1">
                         <label
                           for="abreviacion"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Abreviatura
                         </label>
@@ -904,7 +904,7 @@ const paises = () => {
                       <div class="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          class="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Juego
                         </label>
