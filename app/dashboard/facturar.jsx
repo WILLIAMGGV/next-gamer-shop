@@ -25,8 +25,18 @@ const facturar = () => {
   const [listapais, setListapais] = React.useState([]);
   const [listabancos, setListabancos] = React.useState([]);
   const [listapaquetes2, setListapaquetes2] = React.useState([]);
+  const [asignado, setAsignado] = React.useState(0);
+  const [listaprecios, setListaprecios] = React.useState([]);
+
+  const [factura, setFactura] = React.useState([]);
+  const [enfactura, setEnfactura] = React.useState({
+    fecha: "",
+    referencia: "",
+    total: "",
+  });
 
   const [listatemporal, setListaTemporal] = React.useState([]);
+  const [listatemporal2, setListaTemporal2] = React.useState([]);
   const [valorid, setValorid] = React.useState(0);
   const [valorid2, setValorid2] = React.useState(0);
   const [valoridp, setValoridp] = React.useState(0);
@@ -50,6 +60,42 @@ const facturar = () => {
     nombre: "Seleccionar Pais",
     abreviacion: "",
   });
+
+  const enviarsms = (id) => {
+    var encabezado1 =
+      "%2ATOP%20POWER%20GAMERS%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A_%2AFACTURA%20%23000" +
+      id +
+      "%2A_%0A%2AFecha%3A%2A%" +
+      enfactura.fecha +
+      "%0A%2AReferencia%3A%2A%20" +
+      enfactura.referencia +
+      "%0A";
+    var detalles =
+      "%0A%2AProducto%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A";
+    for (var i = 0; i < listatemporal2.length; i++) {
+      detalles +=
+        "_" +
+        obtenernombre3("nombre", listatemporal2[i].idp) +
+        "_%20---%3E%20" +
+        listatemporal2[i].abreviacion +
+        "%20" +
+        listatemporal2[i].precio +
+        "%0A";
+    }
+    detalles +=
+      "%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A_%2ATOTAL%20PAGADO%3A%20" +
+      abreviacion +
+      "%20" +
+      enfactura.total +
+      "%2A_%0A%0AGracias%20por%20Preferirnos..%F0%9F%A4%9D";
+    var text = encabezado1 + detalles;
+    text = text.replace(/\s+/g, "%20");
+
+    // window.location =
+    //   "https://wa.me/584126515046?text=Hola%20a%20todos%20como%20estan%20%2Abendiciones%2A%0Aeste%20mensaje%20es%20relevant%20para%20todos%20los%20usuarios%0Adel%20congreo%0Anuevo%20remanente%F0%9F%98%8D";
+    //window.location = "whatsapp://send?text=texto%20con%20URL";
+    window.location = "https://wa.me/?text=" + text;
+  };
 
   const obtenerfechaactual = () => {
     const fechaActual = new Date();
@@ -145,8 +191,32 @@ const facturar = () => {
   };
 
   const getpaquetes = () => {
-    axios.get(`api/paquetes/${valorid}/`).then((response) => {
-      setListapaquetes(response.data);
+    axios.get(`api/asignacion/${valorid}/`).then((response) => {
+      if (response.data.length > 0) {
+        setAsignado(response.data[0].idp);
+      }
+    });
+  };
+
+  const getpaquetescompra = () => {
+    axios
+      .get(`api/pack/${valorid}/${valoridpais}/${asignado}`)
+      .then((response) => {
+        if (response.data.length > 0) {
+          setListapaquetes(response.data);
+          console.log(response.data);
+        } else {
+          setListapaquetes([]);
+        }
+      });
+
+    axios.get(`api/preciost/${valorid}/${asignado}`).then((response) => {
+      if (response.data.length > 0) {
+        setListaprecios(response.data);
+        console.log(response.data);
+      } else {
+        setListaprecios([]);
+      }
     });
   };
 
@@ -187,6 +257,12 @@ const facturar = () => {
       if (listapais[i].id == idpa) {
         if (tipo == "nombre") {
           return listapais[i].nombre;
+        }
+        if (tipo == "abreviacion") {
+          return listapais[i].abreviacion;
+        }
+        if (tipo == "precio") {
+          return listapais[i].precio;
         }
       }
     }
@@ -278,6 +354,23 @@ const facturar = () => {
         console.log(paquetes);
       }
     }
+  };
+
+  const obtenerprecio = (tipo, idpa) => {
+    var precio = 0;
+    var dolarv = obtenerpais("precio", valoridpais);
+    var dolarc = obtenerpais("precio", asignado);
+    var total = 0;
+    for (let i = 0; i < listaprecios.length; i++) {
+      if (listaprecios[i].idp == idpa) {
+        if (tipo == "precio") {
+          precio = listaprecios[i].preciodos;
+          total = parseFloat(precio) * parseFloat(dolarv / dolarc);
+          return total.toFixed(2);
+        }
+      }
+    }
+    return null;
   };
 
   const obtenertotal = (precio, prg) => {
@@ -387,16 +480,12 @@ const facturar = () => {
     selectdelete2(id);
   };
 
-  const agregaralcarrito = async (idp, precio, prg, idpais) => {
-    var porcentaje = ((precio * preciopais) / 100) * prg;
-    var total = precio * preciopais + porcentaje;
-    var total = total.toFixed(2);
+  const agregaralcarrito = async (idp, precio, precioc, idpais) => {
     var data = {
       idp,
       precio,
-      prg,
+      precioc,
       idpais,
-      total,
       abreviacion,
     };
 
@@ -414,7 +503,7 @@ const facturar = () => {
   const obtenertotalgeneral = () => {
     var total2 = 0.0;
     for (let i = 0; i < listatemporal.length; i++) {
-      total2 = listatemporal[i].total + total2;
+      total2 = listatemporal[i].precio + total2;
     }
 
     return total2.toFixed(2);
@@ -445,6 +534,7 @@ const facturar = () => {
         telefono,
         listatemporal,
       };
+      setListaTemporal2(listatemporal);
       console.log(data);
       const res = await axios.post("/api/factura", data);
       console.log(res);
@@ -453,7 +543,10 @@ const facturar = () => {
         setErrorreferencia(false);
         setReferencia(0);
         getTemporal();
-        msjsave("Registro con Exito", "save");
+        //msjsave("Registro con Exito", "save");
+        setShowModal(true);
+        setEnfactura(data);
+        setFactura(res.data.id);
       }
     }
   };
@@ -468,10 +561,17 @@ const facturar = () => {
 
   useEffect(() => {
     getpaquetes();
-  }, [valorid]);
+    getpaquetescompra();
+  }, [valoridpais]);
 
   useEffect(() => {
     getpaquetes();
+    getpaquetescompra();
+  }, [valorid, asignado]);
+
+  useEffect(() => {
+    getpaquetes();
+    getpaquetescompra();
   }, [valorid2]);
 
   useEffect(() => {
@@ -487,7 +587,7 @@ const facturar = () => {
             <select
               id="juegose"
               onChange={handleChange}
-              class=" w-[50%] block p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className=" w-[50%] block p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
               <option value="0" selected>
                 Sin Seleccion
@@ -502,16 +602,11 @@ const facturar = () => {
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
+                    <br></br>
+                    <br></br>
                     Nombre
                   </th>
                   <th scope="col" className="px-6 py-3 text-center">
-                    Precio
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    PRG
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Total (con %){" "}
                     <Popconfirm
                       title="Asignar Pais"
                       okText="Actualizar"
@@ -534,6 +629,14 @@ const facturar = () => {
                         {nombrepais} ({preciopais})
                       </span>
                     </Popconfirm>
+                    <br></br>
+                    Precio Venta
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    <br></br>
+                    <span className="text-blue-500 cursor-pointer"></span>
+                    <br></br>
+                    Precio Compra
                   </th>
 
                   <th scope="col" className="px-6 py-3">
@@ -552,13 +655,16 @@ const facturar = () => {
                         scope="row"
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
-                        {val.nombre}
+                        {obtenernombre3("nombre", val.idp)}
                       </th>
-                      <td className="px-6 py-4 text-center">{val.precio}</td>
-                      <td className="px-6 py-4 text-center">{val.prg}%</td>
                       <td className="px-6 py-4 text-center">
-                        {obtenertotal(val.precio, val.prg)}
-                        {" " + abreviacion}
+                        {parseFloat(val.preciov)}{" "}
+                        {obtenerpais("abreviacion", val.idpaisv)}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {" "}
+                        {obtenerprecio("precio", val.idp)}{" "}
+                        {obtenerpais("abreviacion", val.idpaisv)}
                       </td>
 
                       <td className="px-6 py-4 text-right">
@@ -566,7 +672,7 @@ const facturar = () => {
                           <div></div>
                         ) : (
                           <svg
-                            class="w-[32px] h-[32px] text-gray-800 hover:text-green-600 cursor-pointer"
+                            className="w-[32px] h-[32px] max-md:text-green-600 text-gray-800 hover:text-green-600 cursor-pointer"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -575,9 +681,9 @@ const facturar = () => {
                             viewBox="0 0 24 24"
                             onClick={() => {
                               agregaralcarrito(
-                                val.id,
-                                val.precio,
-                                val.prg,
+                                val.idp,
+                                val.preciov,
+                                obtenerprecio("precio", val.idp),
                                 valoridpais
                               );
                             }}
@@ -706,18 +812,12 @@ const facturar = () => {
                     Nombre
                   </th>
                   <th scope="col" className="px-6 py-3 text-center">
-                    Precio (USD)
+                    Precio Venta
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    PRG
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Total
+                    Precio Compra
                   </th>
 
-                  <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">Edit</span>
-                  </th>
                   <th scope="col" className="px-6 py-4 text-right"></th>
                 </tr>
               </thead>
@@ -735,13 +835,8 @@ const facturar = () => {
                         {obtenernombre3("nombre", val.idp)}
                       </th>
                       <td className="px-6 py-4 text-center">{val.precio}</td>
-                      <td className="px-6 py-4">{val.prg}%</td>
+                      <td className="px-6 py-4 text-center">{val.precioc}</td>
 
-                      <td className="px-6 py-4 text-right">
-                        {val.total.toFixed(2)}
-                        {" " + val.abreviacion}
-                      </td>
-                      <td className="px-6 py-4 text-right"></td>
                       <td className="px-6 py-4 text-right">
                         <svg
                           className="w-[24px] h-[24px] hover:text-red-700 cursor-pointer text-gray-800 dark:text-white"
@@ -772,10 +867,11 @@ const facturar = () => {
                       onClick={() => {
                         guardarfacturar();
                       }}
-                      class="text-white bg-[#3d8b2c] hover:bg-[#5dba48]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#5dba48]/55 me-2 mb-2"
+                      id="botonguardar"
+                      className="text-white bg-[#3d8b2c] hover:bg-[#5dba48]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#5dba48]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[16px] h-[16px] text-white"
+                        className="w-[16px] h-[16px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -805,16 +901,13 @@ const facturar = () => {
                     {obtenertotalgeneral()}
                     {" " + abreviacion}
                   </td>
-
-                  <td colSpan={2} className="px-6 py-4 text-right">
-                    {" "}
-                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
+      <ToastContainer />
       {showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -824,12 +917,66 @@ const facturar = () => {
                 {/*header*/}
                 <div className=" bg-cyan-900 flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 className="text-xl text-blue-200 pb-0 font-bold">
-                    Detalles de Facturacion
+                    <div>Factura</div>
                   </h3>
+                  <button
+                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      ×
+                    </span>
+                  </button>
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  REPORTE ANTES DE ENVIAR
+                  <table width="100%">
+                    <tr className=" text-right">
+                      <td>
+                        <span className=" text-lg font-bold text-red-600">
+                          #000{factura}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <strong>Fecha: </strong> {enfactura.fecha}
+                    </tr>
+                    <tr>
+                      <strong>Referencia: </strong> {enfactura.referencia}
+                    </tr>
+                    <tr>
+                      <br />
+                      <hr />
+                    </tr>
+                  </table>
+                  <table width="100%">
+                    {listatemporal2.map((val, key) => {
+                      return (
+                        <tr>
+                          <td colSpan={2} className="italic font-bold">
+                            {obtenernombre3("nombre", val.idp)}
+                          </td>
+                          <td className=" text-right">
+                            {val.precio} {val.abreviacion}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    <tr>
+                      <td colSpan={3}>
+                        <hr />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colSpan={3} className=" text-right">
+                        Total a Pagar:{" "}
+                        <span className=" font-bold">
+                          {enfactura.total} {abreviacion}
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
                 {/*footer*/}
                 <div className="flex bg-cyan-900 items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
@@ -840,312 +987,37 @@ const facturar = () => {
                   >
                     Cerrar
                   </button>
-                  pie de pagina
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
-      {showModal2 ? (
-        <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-lg">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
-                {/*body*/}
-                <div className="relative p-6 flex-auto">
-                  <div class="p-4 md:p-5 text-center">
-                    <svg
-                      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                      />
-                    </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                      Desea Eliminar Este Juego?
-                      <h1 className=" font-bold">{obtenernombre("nombre")}</h1>
-                    </h3>
 
-                    <h3 class="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Si Elimina este Registro, se Eliminan Todos los Paquetes
-                      Correspondientes al Registro
-                    </h3>
-                    <button
-                      data-modal-hide="popup-modal"
-                      onClick={() => confirmdelete(valorid)}
-                      type="button"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                    >
-                      Si, Deseo Eliminar
-                    </button>
-                    <button
-                      data-modal-hide="popup-modal"
-                      type="button"
-                      onClick={() => setShowModal2(false)}
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    >
-                      No, cancelar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
-      {showModal3 ? (
-        <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-lg">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
-                {/*header*/}
-                <div className=" bg-cyan-900 flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                  <h3 className="text-xl text-blue-200 pb-0 font-bold">
-                    {estado2 === 0 ? (
-                      <div>Nuevo Registro de Paquete</div>
-                    ) : (
-                      <div>Actualizar Registro de Paquete</div>
-                    )}
-                  </h3>
                   <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal3(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
-                </div>
-                {/*body*/}
-                <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit2} class="p-0 md:p-5" ref={form2}>
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-                      <div class="col-span-2">
-                        <label
-                          for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Nombre del Juego
-                        </label>
-                        {estado2 == 1 ? (
-                          <input
-                            type="text"
-                            name="nombre"
-                            id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Ingresa el Nombre Aqui"
-                            required=""
-                            defaultValue={obtenernombre2("nombre")}
-                            onChange={handleChange2}
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            name="nombre"
-                            id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Ingresa el Nombre Aqui"
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange2}
-                          />
-                        )}
-                      </div>
-                      <div class="col-span-2 sm:col-span-1">
-                        <label
-                          for="precio"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Precio
-                        </label>
-                        {estado2 == 1 ? (
-                          <input
-                            type="number"
-                            name="precio"
-                            max="100"
-                            id="precio"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={obtenernombre2("precio")}
-                            onChange={handleChange2}
-                          />
-                        ) : (
-                          <input
-                            type="number"
-                            name="precio"
-                            max="100"
-                            id="precio"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange2}
-                          />
-                        )}
-                      </div>
-                      <div class="col-span-2 sm:col-span-1">
-                        <label
-                          for="prg"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          PRG
-                        </label>
-                        {estado2 == 1 ? (
-                          <input
-                            type="number"
-                            name="prg"
-                            max="100"
-                            id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={obtenernombre2("prg")}
-                            onChange={handleChange2}
-                          />
-                        ) : (
-                          <input
-                            type="number"
-                            name="prg"
-                            max="100"
-                            id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder=""
-                            required=""
-                            defaultValue={""}
-                            onChange={handleChange2}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                {/*footer*/}
-                <div className="flex bg-cyan-900 items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
-                  <button
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setShowModal3(false)}
+                    id="botonotro"
+                    onClick={() => {
+                      enviarsms(factura);
+                    }}
+                    className="text-white bg-[#2bdf4f] hover:bg-[#1c9634]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                   >
-                    Cerrar
-                  </button>
-                  {estado2 == 1 ? (
-                    <button
-                      type="submit"
-                      onClick={handleSubmit2}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
-                    >
-                      <svg
-                        class="w-[24px] h-[24px] text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.414A2 2 0 0 0 20.414 6L18 3.586A2 2 0 0 0 16.586 3H5Zm10 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7V5h8v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      &nbsp;&nbsp;Actualizar
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      onClick={handleSubmit2}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
-                    >
-                      <svg
-                        class="w-[24px] h-[24px] text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.414A2 2 0 0 0 20.414 6L18 3.586A2 2 0 0 0 16.586 3H5Zm10 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7V5h8v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      &nbsp;&nbsp;Guardar
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
-      {showModal4 ? (
-        <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-lg">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
-                {/*body*/}
-                <div className="relative p-6 flex-auto">
-                  <div class="p-4 md:p-5 text-center">
                     <svg
-                      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                      className="w-[32px] h-[32px] text-white"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
                       fill="none"
-                      viewBox="0 0 20 20"
+                      viewBox="0 0 24 24"
                     >
                       <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z"
+                        clip-rule="evenodd"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0 .288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z"
                       />
                     </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                      Desea Eliminar Este Paquete?
-                      <h1 className=" font-bold">{obtenernombre2("nombre")}</h1>
-                    </h3>
-
-                    <h3 class="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Si Elimina este Registro, se Eliminan Todos los Paquetes
-                      Correspondientes al Registro
-                    </h3>
-                    <button
-                      data-modal-hide="popup-modal"
-                      onClick={() => confirmdelete2(valoridp)}
-                      type="button"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                    >
-                      Si, Deseo Eliminar
-                    </button>
-                    <button
-                      data-modal-hide="popup-modal"
-                      type="button"
-                      onClick={() => setShowModal4(false)}
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    >
-                      No, cancelar
-                    </button>
-                  </div>
+                    &nbsp;&nbsp;Compartir Factura
+                  </button>
                 </div>
               </div>
             </div>
@@ -1153,7 +1025,6 @@ const facturar = () => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-      <ToastContainer />
     </div>
   );
 };

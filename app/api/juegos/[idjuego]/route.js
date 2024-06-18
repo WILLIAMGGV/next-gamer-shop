@@ -47,6 +47,9 @@ export async function PUT(request, { params }) {
       nombre: data.nombre,
       categoria: data.categoria,
       prg: data.prg,
+      seccion1: data.seccion1,
+      seccion2: data.seccion2,
+      encabezado: data.encabezado,
     };
 
     const result = await conn.query("UPDATE juegos SET ? WHERE id = ?", [

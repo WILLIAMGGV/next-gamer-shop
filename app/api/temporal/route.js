@@ -20,25 +20,25 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    console.log(request);
-    const { idp, precio, prg, idpais, total, abreviacion } =
-      await request.json();
+    const { idp, precio, precioc, idpais, abreviacion } = await request.json();
+
+    console.log(
+      idp + " " + precio + " " + precioc + " " + idpais + " " + abreviacion
+    );
 
     const result = await conn.query("INSERT INTO temporal SET ?", {
       idp: idp,
       precio: precio,
-      prg: prg,
+      precioc: precioc,
       idpais: idpais,
-      total: total,
       abreviacion: abreviacion,
     });
 
     return NextResponse.json({
       idp: idp,
       precio: precio,
-      prg: prg,
+      precioc: precioc,
       idpais: idpais,
-      total: total,
       abreviacion: abreviacion,
       id: result.insertId,
     });

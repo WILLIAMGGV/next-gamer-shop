@@ -20,18 +20,20 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { nombre, precio, abreviacion } = await request.json();
+    const { nombre, precio, abreviacion, descripcion } = await request.json();
 
     const result = await conn.query("INSERT INTO paises SET ?", {
       nombre: nombre,
       precio: precio,
       abreviacion: abreviacion,
+      descripcion: descripcion,
     });
 
     return NextResponse.json({
       nombre: nombre,
       precio: precio,
       abreviacion: abreviacion,
+      descripcion: descripcion,
       id: result.insertId,
     });
   } catch (error) {

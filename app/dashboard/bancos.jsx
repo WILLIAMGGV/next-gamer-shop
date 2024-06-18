@@ -461,12 +461,16 @@ const bancos = () => {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit} class="p-0 md:p-5" ref={form}>
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-                      <div class="col-span-2">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="p-0 md:p-5"
+                    ref={form}
+                  >
+                    <div className="grid gap-4 mb-4 grid-cols-2">
+                      <div className="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Banco
                         </label>
@@ -475,7 +479,7 @@ const bancos = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={obtenernombre("nombre")}
@@ -486,7 +490,7 @@ const bancos = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={""}
@@ -494,10 +498,10 @@ const bancos = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="cuenta"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Cuenta
                         </label>
@@ -507,7 +511,7 @@ const bancos = () => {
                             name="cuenta"
                             max="100"
                             id="cuenta"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={obtenernombre("cuenta")}
@@ -519,7 +523,7 @@ const bancos = () => {
                             name="cuenta"
                             max="100"
                             id="cuenta"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={""}
@@ -527,10 +531,10 @@ const bancos = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="tipo"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Tipo
                         </label>
@@ -540,7 +544,7 @@ const bancos = () => {
                             name="tipo"
                             max="100"
                             id="tipo"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={obtenernombre("tipo")}
@@ -552,7 +556,7 @@ const bancos = () => {
                             name="tipo"
                             max="100"
                             id="tipo"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={""}
@@ -560,10 +564,10 @@ const bancos = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="idp"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Pais
                         </label>
@@ -571,7 +575,7 @@ const bancos = () => {
                           id="idp"
                           name="idp"
                           onChange={handleChange}
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         >
                           <option value="0" selected>
                             Seleccionar Pais
@@ -607,10 +611,10 @@ const bancos = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -630,10 +634,10 @@ const bancos = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -665,9 +669,9 @@ const bancos = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <div class="p-4 md:p-5 text-center">
+                  <div className="p-4 md:p-5 text-center">
                     <svg
-                      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                      className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -681,7 +685,7 @@ const bancos = () => {
                         d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                       Desea Eliminar Este Banco o Cuenta?
                       <h1 className=" font-bold">{obtenernombre("nombre")}</h1>
                     </h3>
@@ -690,7 +694,7 @@ const bancos = () => {
                       data-modal-hide="popup-modal"
                       onClick={() => confirmdelete(valorid)}
                       type="button"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                     >
                       Si, Deseo Eliminar
                     </button>
@@ -698,7 +702,7 @@ const bancos = () => {
                       data-modal-hide="popup-modal"
                       type="button"
                       onClick={() => setShowModal2(false)}
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                     >
                       No, cancelar
                     </button>

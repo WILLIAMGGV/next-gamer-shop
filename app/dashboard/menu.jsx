@@ -1,15 +1,15 @@
 const menu = ({ opcion }) => {
   return (
-    <div class="flex flex-wrap place-content-center max-md:place-content-around w-full p-2 bg-sky-950  rounded-lg ">
+    <div className="flex flex-wrap place-content-center max-md:place-content-around w-full p-2 bg-sky-950  rounded-lg ">
       <div className="m-2">
         <a
           onClick={() => {
             opcion("juegos");
           }}
-          class="w-full cursor-pointer sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          className="w-full cursor-pointer sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
-            class="w-[32px] h-[32px] text-white"
+            className="w-[32px] h-[32px] text-white"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -26,9 +26,9 @@ const menu = ({ opcion }) => {
               clip-rule="evenodd"
             />
           </svg>
-          <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Registro</div>
-            <div class="-mt-1 font-sans text-sm font-semibold">
+          <div className="text-left rtl:text-right">
+            <div className="mb-1 text-xs">&nbsp;&nbsp; Registro</div>
+            <div className="-mt-1 font-sans text-sm font-semibold">
               &nbsp;&nbsp; Juegos
             </div>
           </div>
@@ -40,10 +40,10 @@ const menu = ({ opcion }) => {
           onClick={() => {
             opcion("paises");
           }}
-          class="w-full sm:w-auto cursor-pointer   bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          className="w-full sm:w-auto cursor-pointer   bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
-            class="w-[32px] h-[32px] text-white"
+            className="w-[32px] h-[32px] text-white"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -57,9 +57,9 @@ const menu = ({ opcion }) => {
             <path d="M13.09 3.294c1.924.95 3.422 1.69 5.472.692a1 1 0 0 1 1.438.9v9.54a1 1 0 0 1-.562.9c-2.981 1.45-5.382.24-7.25-.701a38.739 38.739 0 0 0-.622-.31c-1.033-.497-1.887-.812-2.756-.77-.76.036-1.672.357-2.81 1.396V21a1 1 0 1 1-2 0V4.971a1 1 0 0 1 .297-.71c1.522-1.506 2.967-2.185 4.417-2.255 1.407-.068 2.653.453 3.72.967.225.108.443.216.655.32Z" />
           </svg>
 
-          <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Lista de</div>
-            <div class="-mt-1 font-sans text-sm font-semibold">
+          <div className="text-left rtl:text-right">
+            <div className="mb-1 text-xs">&nbsp;&nbsp; Lista de</div>
+            <div className="-mt-1 font-sans text-sm font-semibold">
               &nbsp;&nbsp; Paises
             </div>
           </div>
@@ -71,10 +71,10 @@ const menu = ({ opcion }) => {
           onClick={() => {
             opcion("presupuesto");
           }}
-          class="w-full cursor-pointer sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          className="w-full cursor-pointer sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
-            class="w-[32px] h-[32px] text-white"
+            className="w-[32px] h-[32px] text-white"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -89,9 +89,9 @@ const menu = ({ opcion }) => {
             />
           </svg>
 
-          <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Crear</div>
-            <div class="-mt-1 font-sans text-sm font-semibold">
+          <div className="text-left rtl:text-right">
+            <div className="mb-1 text-xs">&nbsp;&nbsp; Crear</div>
+            <div className="-mt-1 font-sans text-sm font-semibold">
               &nbsp;&nbsp; Presupuesto
             </div>
           </div>
@@ -103,10 +103,10 @@ const menu = ({ opcion }) => {
           onClick={() => {
             opcion("bancos");
           }}
-          class=" cursor-pointer w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          className=" cursor-pointer w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
-            class="w-[32px] h-[32px] text-white"
+            className="w-[32px] h-[32px] text-white"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -126,9 +126,9 @@ const menu = ({ opcion }) => {
             />
           </svg>
 
-          <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Registro</div>
-            <div class="-mt-1 font-sans text-sm font-semibold">
+          <div className="text-left rtl:text-right">
+            <div className="mb-1 text-xs">&nbsp;&nbsp; Registro</div>
+            <div className="-mt-1 font-sans text-sm font-semibold">
               &nbsp;&nbsp; Bancos
             </div>
           </div>
@@ -140,10 +140,10 @@ const menu = ({ opcion }) => {
           onClick={() => {
             opcion("facturar");
           }}
-          class=" cursor-pointer w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          className=" cursor-pointer w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
-            class="w-[32px] h-[32px] text-white"
+            className="w-[32px] h-[32px] text-white"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -158,9 +158,9 @@ const menu = ({ opcion }) => {
             />
           </svg>
 
-          <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Generar</div>
-            <div class="-mt-1 font-sans text-sm font-semibold">
+          <div className="text-left rtl:text-right">
+            <div className="mb-1 text-xs">&nbsp;&nbsp; Generar</div>
+            <div className="-mt-1 font-sans text-sm font-semibold">
               &nbsp;&nbsp; Factura
             </div>
           </div>
@@ -170,10 +170,10 @@ const menu = ({ opcion }) => {
       <div className="m-2">
         <a
           href="#"
-          class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          className="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
         >
           <svg
-            class="w-[32px] h-[32px] text-white"
+            className="w-[32px] h-[32px] text-white"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -188,9 +188,9 @@ const menu = ({ opcion }) => {
             />
           </svg>
 
-          <div class="text-left rtl:text-right">
-            <div class="mb-1 text-xs">&nbsp;&nbsp; Informe</div>
-            <div class="-mt-1 font-sans text-sm font-semibold">
+          <div className="text-left rtl:text-right">
+            <div className="mb-1 text-xs">&nbsp;&nbsp; Informe</div>
+            <div className="-mt-1 font-sans text-sm font-semibold">
               &nbsp;&nbsp; Ventas
             </div>
           </div>

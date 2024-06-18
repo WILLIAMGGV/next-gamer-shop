@@ -23,10 +23,14 @@ const juegos = () => {
     nombre: "",
     categoria: "",
     prg: "",
+    seccion1: "",
+    seccion2: "",
+    encabezado: "",
   });
   const [paquetes, setPaquetes] = React.useState({
     nombre: "",
     prg: "",
+    seccion: "Seccion 1",
   });
 
   const msjsave = (mensajesave, tipodemensaje) => {
@@ -107,10 +111,22 @@ const juegos = () => {
         if (tipo == "prg") {
           return listajuegos[i].prg;
         }
+        if (tipo == "seccion1") {
+          return listajuegos[i].seccion1;
+        }
+        if (tipo == "seccion2") {
+          return listajuegos[i].seccion2;
+        }
+        if (tipo == "encabezado") {
+          return listajuegos[i].encabezado;
+        }
         setJuegos({
           nombre: listajuegos[i].nombre,
           categoria: listajuegos[i].categoria,
           prg: listajuegos[i].prg,
+          seccion1: listajuegos[i].seccion1,
+          seccion2: listajuegos[i].seccion2,
+          encabezado: listajuegos[i].encabezado,
         });
       }
     }
@@ -151,10 +167,14 @@ const juegos = () => {
         if (tipo == "prg") {
           return listapaquetes[i].prg;
         }
+        if (tipo == "seccion") {
+          return listapaquetes[i].seccion;
+        }
         setPaquetes({
           nombre: listapaquetes[i].nombre,
           categoria: listapaquetes[i].precio,
           prg: listapaquetes[i].prg,
+          seccion: listapaquetes[i].seccion,
         });
       }
     }
@@ -181,6 +201,7 @@ const juegos = () => {
           nombre: listapaquetes[i].nombre,
           precio: listapaquetes[i].precio,
           prg: listapaquetes[i].prg,
+          seccion: listapaquetes[i].seccion,
         });
         console.log(paquetes);
       }
@@ -350,6 +371,9 @@ const juegos = () => {
                           nombre: "null",
                           categoria: "null",
                           prg: "0",
+                          seccion1: "",
+                          seccion2: "",
+                          encabezado: "",
                         });
                       }}
                     >
@@ -597,12 +621,12 @@ const juegos = () => {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit} class="p-0 md:p-5" ref={form}>
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-                      <div class="col-span-2">
+                  <form onSubmit={handleSubmit} className="p-0 md:p-5" ref={form}>
+                    <div className="grid gap-4 mb-4 grid-cols-2">
+                      <div className="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Juego
                         </label>
@@ -611,7 +635,7 @@ const juegos = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={obtenernombre("nombre")}
@@ -622,7 +646,7 @@ const juegos = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={""}
@@ -630,10 +654,10 @@ const juegos = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="prg"
-                          class="block mb-2 text-sm font-medium text-gray-900"
+                          className="block mb-2 text-sm font-medium text-gray-900"
                         >
                           PRG
                         </label>
@@ -643,7 +667,7 @@ const juegos = () => {
                             name="prg"
                             max="100"
                             id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={obtenernombre("prg")}
@@ -656,7 +680,7 @@ const juegos = () => {
                               name="prg"
                               max="100"
                               id="prg"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder=""
                               required=""
                               defaultValue={""}
@@ -665,10 +689,10 @@ const juegos = () => {
                           </>
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="categoria"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Categoria
                         </label>
@@ -676,7 +700,7 @@ const juegos = () => {
                           id="categoria"
                           name="categoria"
                           onChange={handleChange}
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         >
                           {estado == 1 ? (
                             <>
@@ -723,6 +747,107 @@ const juegos = () => {
                           )}
                         </select>
                       </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label
+                          for="seccion1"
+                          className="block mb-2 text-sm font-medium text-gray-900"
+                        >
+                          Seccion 1:
+                        </label>
+                        {estado == 1 ? (
+                          <input
+                            type="text"
+                            name="seccion1"
+                            max="100"
+                            id="seccion1"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder=""
+                            required=""
+                            defaultValue={obtenernombre("seccion1")}
+                            onChange={handleChange}
+                          />
+                        ) : (
+                          <>
+                            <input
+                              type="text"
+                              name="seccion1"
+                              max="100"
+                              id="seccion1"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder=""
+                              required=""
+                              defaultValue={""}
+                              onChange={handleChange}
+                            />
+                          </>
+                        )}
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label
+                          for="seccion2"
+                          className="block mb-2 text-sm font-medium text-gray-900"
+                        >
+                          Seccion 2:
+                        </label>
+                        {estado == 1 ? (
+                          <input
+                            type="text"
+                            name="seccion2"
+                            max="100"
+                            id="seccion2"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder=""
+                            required=""
+                            defaultValue={obtenernombre("seccion2")}
+                            onChange={handleChange}
+                          />
+                        ) : (
+                          <>
+                            <input
+                              type="text"
+                              name="seccion2"
+                              max="100"
+                              id="seccion2"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder=""
+                              required=""
+                              defaultValue={""}
+                              onChange={handleChange}
+                            />
+                          </>
+                        )}
+                      </div>
+                      <div className="col-span-2">
+                        <label
+                          for="encabezado"
+                          className="block mb-2 text-sm font-medium text-gray-900 "
+                        >
+                          Encabezado
+                        </label>
+                        {estado == 1 ? (
+                          <input
+                            type="text"
+                            name="encabezado"
+                            id="encabezado"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder=""
+                            required=""
+                            defaultValue={obtenernombre("encabezado")}
+                            onChange={handleChange}
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            name="encabezado"
+                            id="encabezado"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder=""
+                            required=""
+                            defaultValue={""}
+                            onChange={handleChange}
+                          />
+                        )}
+                      </div>
                     </div>
                   </form>
                 </div>
@@ -739,10 +864,10 @@ const juegos = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -762,10 +887,10 @@ const juegos = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -797,9 +922,9 @@ const juegos = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <div class="p-4 md:p-5 text-center">
+                  <div className="p-4 md:p-5 text-center">
                     <svg
-                      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                      className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -813,12 +938,12 @@ const juegos = () => {
                         d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                       Desea Eliminar Este Juego?
                       <h1 className=" font-bold">{obtenernombre("nombre")}</h1>
                     </h3>
 
-                    <h3 class="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
                       Si Elimina este Registro, se Eliminan Todos los Paquetes
                       Correspondientes al Registro
                     </h3>
@@ -826,7 +951,7 @@ const juegos = () => {
                       data-modal-hide="popup-modal"
                       onClick={() => confirmdelete(valorid)}
                       type="button"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                     >
                       Si, Deseo Eliminar
                     </button>
@@ -834,7 +959,7 @@ const juegos = () => {
                       data-modal-hide="popup-modal"
                       type="button"
                       onClick={() => setShowModal2(false)}
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                     >
                       No, cancelar
                     </button>
@@ -872,12 +997,12 @@ const juegos = () => {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit2} class="p-0 md:p-5" ref={form2}>
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-                      <div class="col-span-2">
+                  <form onSubmit={handleSubmit2} className="p-0 md:p-5" ref={form2}>
+                    <div className="grid gap-4 mb-4 grid-cols-2">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900"
+                          className="block mb-2 text-sm font-medium text-gray-900"
                         >
                           Nombre del Juego
                         </label>
@@ -886,7 +1011,7 @@ const juegos = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={obtenernombre2("nombre")}
@@ -897,7 +1022,7 @@ const juegos = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={""}
@@ -905,11 +1030,51 @@ const juegos = () => {
                           />
                         )}
                       </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <label
+                          for="seccion"
+                          className="block mb-2 text-sm font-medium text-gray-900 "
+                        >
+                          Secci&oacute;n
+                        </label>
+                        <select
+                          id="seccion"
+                          name="seccion"
+                          onChange={handleChange2}
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        >
+                          {estado2 == 1 ? (
+                            <>
+                              {obtenernombre2("seccion") == "Seccion 1" ? (
+                                <option value="Seccion 1" selected>
+                                  Seccion 1
+                                </option>
+                              ) : (
+                                <option value="Seccion 1">Seccion 1</option>
+                              )}
+                              {obtenernombre2("seccion") == "Seccion 2" ? (
+                                <option value="Seccion 2" selected>
+                                  Seccion 2
+                                </option>
+                              ) : (
+                                <option value="Seccion 2">Seccion 2</option>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <option value="Seccion 1" selected>
+                                Seccion 1
+                              </option>
+                              <option value="Seccion 2">Seccion 2</option>
+                            </>
+                          )}
+                        </select>
+                      </div>
 
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="prg"
-                          class="block mb-2 text-sm font-medium text-gray-900"
+                          className="block mb-2 text-sm font-medium text-gray-900"
                         >
                           ICONO SELECCIONADO
                         </label>
@@ -920,7 +1085,7 @@ const juegos = () => {
                               name="prg"
                               max="100"
                               id="prg"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:placeholder-gray-400 "
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:placeholder-gray-400 "
                               placeholder=""
                               required=""
                               defaultValue={obtenernombre2("prg")}
@@ -937,7 +1102,7 @@ const juegos = () => {
                               name="prg"
                               max="100"
                               id="prg"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder=""
                               required=""
                               defaultValue={valoremoji}
@@ -974,10 +1139,10 @@ const juegos = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit2}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -997,10 +1162,10 @@ const juegos = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit2}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -1032,9 +1197,9 @@ const juegos = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <div class="p-4 md:p-5 text-center">
+                  <div className="p-4 md:p-5 text-center">
                     <svg
-                      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                      className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -1048,12 +1213,12 @@ const juegos = () => {
                         d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                       Desea Eliminar Este Paquete?
                       <h1 className=" font-bold">{obtenernombre2("nombre")}</h1>
                     </h3>
 
-                    <h3 class="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
                       Si Elimina este Registro, se Eliminan Todos los Paquetes
                       Correspondientes al Registro
                     </h3>
@@ -1061,7 +1226,7 @@ const juegos = () => {
                       data-modal-hide="popup-modal"
                       onClick={() => confirmdelete2(valoridp)}
                       type="button"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                     >
                       Si, Deseo Eliminar
                     </button>
@@ -1069,7 +1234,7 @@ const juegos = () => {
                       data-modal-hide="popup-modal"
                       type="button"
                       onClick={() => setShowModal4(false)}
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                     >
                       No, cancelar
                     </button>

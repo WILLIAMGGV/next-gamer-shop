@@ -18,8 +18,11 @@ const paises = () => {
 
   const [listajuegos, setListajuegos] = React.useState([]);
 
+  const [asignado, setAsignado] = React.useState([]);
+
   const [idjuego, setIdjuego] = React.useState(0);
   const [idpais, setIdpais] = React.useState(0);
+  const [activarcampana, setActivarcampana] = React.useState(false);
 
   const [valorid, setValorid] = React.useState(0);
   const [valorid2, setValorid2] = React.useState(0);
@@ -30,6 +33,7 @@ const paises = () => {
     nombre: "",
     precio: 0,
     abreviacion: "",
+    descripcion: "",
   });
   const [paquetes, setPaquetes] = React.useState({
     nombre: "",
@@ -97,6 +101,17 @@ const paises = () => {
     });
   };
 
+  const getasignado = () => {
+    axios.get(`api/asignacion/${idjuego}`).then((response) => {
+      console.log(response.data);
+      if (response.data.status == 400) {
+        setAsignado([]);
+      } else {
+        setAsignado(response.data);
+      }
+    });
+  };
+
   const contarasignados = () => {
     var contador = 0;
     for (let i = 0; i < listaasignacion.length; i++) {
@@ -132,9 +147,13 @@ const paises = () => {
         if (tipo == "precio") {
           return listapaises[i].categoria;
         }
+        if (tipo == "descripcion") {
+          return listapaises[i].descripcion;
+        }
         setPaises({
           nombre: listapaises[i].nombre,
           precio: listapaises[i].precio,
+          descripcion: listapaises[i].descripcion,
         });
       }
     }
@@ -355,6 +374,39 @@ const paises = () => {
     setIdpais(asignar);
   };
 
+  const obtenerasignado = () => {
+    var activado = 0;
+    for (let i = 0; i < asignado.length; i++) {
+      if (asignado[i].idp == idpais) {
+        setActivarcampana(true);
+        activado = 1;
+      }
+    }
+    if (activado == 0) {
+      setActivarcampana(false);
+    }
+  };
+
+  const asignarpais = async () => {
+    var idasig = 0;
+
+    if (asignado.length > 0) {
+      idasig = asignado[0].id;
+      const data = {
+        idp: idpais,
+      };
+      const res = await axios.put(`/api/asignacion/${idasig}`, data);
+      console.log(res);
+      if (res.request.status === 200) {
+        console.log("GUARDADO");
+
+        msjsave("Pais Asignado para la compra Exitosamente", "save");
+
+        getasignado();
+      }
+    }
+  };
+
   const updateprecio = async (id) => {
     var precioc = document.getElementById("precioc" + id).value;
     const data = {
@@ -377,12 +429,17 @@ const paises = () => {
   }, []);
 
   useEffect(() => {
+    obtenerasignado();
+  }, [asignado]);
+
+  useEffect(() => {
     obtenerregistro();
   }, [valorid]);
 
   useEffect(() => {
     getasignacion();
     getpaquetes();
+    getasignado();
   }, [idjuego, idpais]);
 
   useEffect(() => {
@@ -620,6 +677,55 @@ const paises = () => {
                     </tr>
                   );
                 })}
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td colSpan={3} className="text-center"></td>
+                </tr>
+                <tr className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td colSpan={3}>
+                    {/* ACTIVACION PARA COMPRA */}
+                    {activarcampana == true ? (
+                      <button
+                        type="button"
+                        className="text-white bg-[#3d8b2c] hover:bg-[#5dba48]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#5dba48]/55 me-2 mb-2"
+                      >
+                        <svg
+                          className="w-[32px] h-[32px] text-gray-800 text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M17.133 12.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.933.933 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.391A1.001 1.001 0 1 1 6.854 5.8a7.43 7.43 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 17.146 5.8a1 1 0 0 1 1.471-1.354 9.424 9.424 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z" />
+                        </svg>
+                        Activado
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          asignarpais();
+                        }}
+                        id="botonasignado"
+                        className="text-white bg-[#3d8b2c] hover:bg-[#5dba48]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#5dba48]/55 me-2 mb-2"
+                      >
+                        <svg
+                          className="w-[32px] h-[32px] text-gray-800 text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M17.133 12.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.933.933 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.391A1.001 1.001 0 1 1 6.854 5.8a7.43 7.43 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 17.146 5.8a1 1 0 0 1 1.471-1.354 9.424 9.424 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z" />
+                        </svg>
+                        Activar para Compra
+                      </button>
+                    )}
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -651,12 +757,16 @@ const paises = () => {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit} class="p-0 md:p-5" ref={form}>
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-                      <div class="col-span-2">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="p-0 md:p-5"
+                    ref={form}
+                  >
+                    <div className="grid gap-4 mb-4 grid-cols-2">
+                      <div className="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Pais
                         </label>
@@ -665,7 +775,7 @@ const paises = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={obtenernombre("nombre")}
@@ -676,7 +786,7 @@ const paises = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={""}
@@ -684,10 +794,10 @@ const paises = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="precio"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Precio del Dolar Actual
                         </label>
@@ -697,7 +807,7 @@ const paises = () => {
                             name="precio"
                             max="100"
                             id="precio"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={obtenernombre("precio")}
@@ -709,7 +819,7 @@ const paises = () => {
                             name="precio"
                             max="100"
                             id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={""}
@@ -717,10 +827,10 @@ const paises = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="abreviacion"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Abreviatura
                         </label>
@@ -730,7 +840,7 @@ const paises = () => {
                             name="abreviacion"
                             max="100"
                             id="abreviacion"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={obtenernombre("abreviacion")}
@@ -742,7 +852,38 @@ const paises = () => {
                             name="abreviacion"
                             max="100"
                             id="abreviacion"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder=""
+                            required=""
+                            defaultValue={""}
+                            onChange={handleChange}
+                          />
+                        )}
+                      </div>
+                      <div className="col-span-2">
+                        <label
+                          for="descripcion"
+                          className="block mb-2 text-sm font-medium text-gray-900 "
+                        >
+                          Descripcion de Metodo de Pago
+                        </label>
+                        {estado == 1 ? (
+                          <input
+                            type="text"
+                            name="descripcion"
+                            id="descripcion"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder=""
+                            required=""
+                            defaultValue={obtenernombre("descripcion")}
+                            onChange={handleChange}
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            name="descripcion"
+                            id="descripcion"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={""}
@@ -766,10 +907,10 @@ const paises = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -789,10 +930,10 @@ const paises = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -824,9 +965,9 @@ const paises = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <div class="p-4 md:p-5 text-center">
+                  <div className="p-4 md:p-5 text-center">
                     <svg
-                      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                      className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -840,12 +981,12 @@ const paises = () => {
                         d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                       Desea Eliminar Este Pais?
                       <h1 className=" font-bold">{obtenernombre("nombre")}</h1>
                     </h3>
 
-                    <h3 class="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
                       Si Elimina este Registro, se Eliminan Todas las
                       asignaciones Correspondientes al Registro
                     </h3>
@@ -853,7 +994,7 @@ const paises = () => {
                       data-modal-hide="popup-modal"
                       onClick={() => confirmdelete(valorid)}
                       type="button"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                     >
                       Si, Deseo Eliminar
                     </button>
@@ -861,7 +1002,7 @@ const paises = () => {
                       data-modal-hide="popup-modal"
                       type="button"
                       onClick={() => setShowModal2(false)}
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                     >
                       No, cancelar
                     </button>
@@ -899,12 +1040,16 @@ const paises = () => {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit2} class="p-0 md:p-5" ref={form2}>
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-                      <div class="col-span-2">
+                  <form
+                    onSubmit={handleSubmit2}
+                    className="p-0 md:p-5"
+                    ref={form2}
+                  >
+                    <div className="grid gap-4 mb-4 grid-cols-2">
+                      <div className="col-span-2">
                         <label
                           for="name"
-                          class="block mb-2 text-sm font-medium text-gray-900 "
+                          className="block mb-2 text-sm font-medium text-gray-900 "
                         >
                           Nombre del Juego
                         </label>
@@ -913,7 +1058,7 @@ const paises = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={obtenernombre2("nombre")}
@@ -924,7 +1069,7 @@ const paises = () => {
                             type="text"
                             name="nombre"
                             id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Ingresa el Nombre Aqui"
                             required=""
                             defaultValue={""}
@@ -932,10 +1077,10 @@ const paises = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="precio"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
                           Precio
                         </label>
@@ -945,7 +1090,7 @@ const paises = () => {
                             name="precio"
                             max="100"
                             id="precio"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={obtenernombre2("precio")}
@@ -957,7 +1102,7 @@ const paises = () => {
                             name="precio"
                             max="100"
                             id="precio"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={""}
@@ -965,10 +1110,10 @@ const paises = () => {
                           />
                         )}
                       </div>
-                      <div class="col-span-2 sm:col-span-1">
+                      <div className="col-span-2 sm:col-span-1">
                         <label
                           for="prg"
-                          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
                           PRG
                         </label>
@@ -978,7 +1123,7 @@ const paises = () => {
                             name="prg"
                             max="100"
                             id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={obtenernombre2("prg")}
@@ -990,7 +1135,7 @@ const paises = () => {
                             name="prg"
                             max="100"
                             id="prg"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder=""
                             required=""
                             defaultValue={""}
@@ -1014,10 +1159,10 @@ const paises = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit2}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -1037,10 +1182,10 @@ const paises = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit2}
-                      class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                      className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
                     >
                       <svg
-                        class="w-[24px] h-[24px] text-white"
+                        className="w-[24px] h-[24px] text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -1072,9 +1217,9 @@ const paises = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <div class="p-4 md:p-5 text-center">
+                  <div className="p-4 md:p-5 text-center">
                     <svg
-                      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                      className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -1088,12 +1233,12 @@ const paises = () => {
                         d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                       Desea Eliminar Este Paquete?
                       <h1 className=" font-bold">{obtenernombre2("nombre")}</h1>
                     </h3>
 
-                    <h3 class="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
+                    <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
                       Si Elimina este Registro, se Eliminan Todos los Paquetes
                       Correspondientes al Registro
                     </h3>
@@ -1101,7 +1246,7 @@ const paises = () => {
                       data-modal-hide="popup-modal"
                       onClick={() => confirmdelete2(valoridp)}
                       type="button"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
                     >
                       Si, Deseo Eliminar
                     </button>
@@ -1109,7 +1254,7 @@ const paises = () => {
                       data-modal-hide="popup-modal"
                       type="button"
                       onClick={() => setShowModal4(false)}
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                     >
                       No, cancelar
                     </button>

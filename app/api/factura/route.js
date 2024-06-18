@@ -3,9 +3,20 @@ import { conn } from "../../libs/mysql";
 
 export async function POST(request) {
   try {
-    console.log(request);
     const { fecha, referencia, total, telefono, listatemporal } =
       await request.json();
+
+    console.log(
+      fecha +
+        " " +
+        referencia +
+        " " +
+        total +
+        " " +
+        telefono +
+        " " +
+        listatemporal
+    );
 
     const result = await conn.query("INSERT INTO facturas SET ?", {
       fecha: fecha,
@@ -19,8 +30,7 @@ export async function POST(request) {
         idf: result.insertId,
         idp: listatemporal[i].idp,
         precio: listatemporal[i].precio,
-        prg: listatemporal[i].prg,
-        total: listatemporal[i].total,
+        precioc: listatemporal[i].precioc,
         abreviacion: listatemporal[i].abreviacion,
       });
     }

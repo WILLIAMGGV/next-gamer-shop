@@ -22,12 +22,16 @@ export async function GET() {
 export async function POST(request) {
   try {
     console.log(request);
-    const { nombre, categoria, prg } = await request.json();
+    const { nombre, categoria, prg, seccion1, seccion2, encabezado } =
+      await request.json();
 
     const result = await conn.query("INSERT INTO juegos SET ?", {
       nombre: nombre,
       categoria: categoria,
       prg: prg,
+      seccion1: seccion1,
+      seccion2: seccion2,
+      encabezado: encabezado,
     });
 
     const result2 = await conn.query("INSERT INTO asignacion SET ?", {

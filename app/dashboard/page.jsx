@@ -44,15 +44,15 @@ function Dashboard() {
 
         <div className="flex">
           <div className="p-2">
-            <div class="flex items-center gap-4 ">
+            <div className="flex items-center gap-4 ">
               <img
-                class="w-10 h-10 rounded-full border-2 border-blue-500"
+                className="w-10 h-10 rounded-full border-2 border-blue-500"
                 src="https://picsum.photos/200"
                 alt=""
               />
-              <div class="font-medium dark:text-white">
+              <div className="font-medium dark:text-white">
                 <div className="text-white max-md:hidden">William Godoy</div>
-                <div class="text-sm text-gray-500 dark:text-gray-400 max-md:hidden">
+                <div className="text-sm text-gray-500 dark:text-gray-400 max-md:hidden">
                   Administrador
                 </div>
               </div>
@@ -62,10 +62,10 @@ function Dashboard() {
             <button
               type="button"
               onClick={() => logout()}
-              class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+              className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
             >
               <svg
-                class="w-6 h-6 text-gray-800 dark:text-white"
+                className="w-6 h-6 text-gray-800 dark:text-white"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -82,7 +82,7 @@ function Dashboard() {
         </div>
       </div>
       <div className=" bg-sky-950 w-full p-2 m-0 h-[80%]">
-        <h4 class="mb-1 flex place-content-start text-base font-semibold text-gray-900 md:text-lg dark:text-white">
+        <h4 className="mb-1 flex place-content-start text-base font-semibold text-gray-900 md:text-lg dark:text-white">
           <spna className=" text-purple-500 text-2xl">
             Bienvenido&nbsp;&nbsp;
           </spna>{" "}
@@ -97,9 +97,9 @@ function Dashboard() {
         {selectmenu == "facturar" ? <Facturar /> : <></>}
 
         <div>
-          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+          <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
             © 2024{" "}
-            <a href="https://toppower.com/" class="hover:underline">
+            <a href="https://toppower.com/" className="hover:underline">
               TopPowerGamers™
             </a>
             . All Rights Reserved.

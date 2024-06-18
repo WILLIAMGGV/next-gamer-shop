@@ -7,6 +7,7 @@ export async function PUT(request, { params }) {
 
     const updateData = {
       prg: data.prg,
+      seccion: data.seccion,
     };
 
     const result = await conn.query("UPDATE paquetes SET ? WHERE id = ?", [

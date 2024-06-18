@@ -64,35 +64,66 @@ const presupuesto = () => {
       msjsave("No se ha seleccionado un Juego", "error");
       return null;
     }
-    var juego = "%2A" + obtenernombre2("nombre") + "%2A%0A%0A";
+    var juego = "%2A" + obtenernombre2("nombre") + "%2A%0A";
+    var seccion1 = "%0A%0A%2A" + obtenernombre2("seccion1") + "%2A%0A%0A";
+    var seccion2 = "%0A%2A" + obtenernombre2("seccion2") + "%2A%0A%0A";
+    var encabezado = "%2A" + obtenernombre2("encabezado") + "%2A";
+    var recordatorio =
+      "%2ARECORDATORIO%3A%2A%20Una%20ves%20realizado%20el%20pago%20recuerda%20enviarnos%20el%20comprobante%20%28captura%20de%20pantalla%20o%20foto%20del%20pago%20realizado%29%20una%20vez%20verificado%2C%20tu%20pedido%20sera%20procesado%20inmediatamente.%20%F0%9F%8F%83%E2%80%8D%E2%99%82%EF%B8%8F%0A";
+    var nota =
+      "%0ANOTA%3A%20Recuerda%20siempre%20enviar%20el%20monto%20correcto%2C%20si%20tu%20pago%20esta%20incompleto%20no%20se%20procesara%20tu%20recarga%20hasta%20que%20sea%20completado%2C%20sin%20excepciones.%09";
     juego = juego.replace(/\s+/g, "%20");
     var paquetestitle = "%2APAQUETES%2A%0A";
-    console.log(listapaquetes);
-    if (preciopais == 0) {
+
+    if (idpaisv == 0) {
       msjsave("Debes seleccionar un Pais o Moneda", "error");
       return null;
     }
     var descripcion = "";
+    var descripcion2 = "";
     var precio = 0;
-    for (let i = 0; i < listapaquetes.length; i++) {
-      precio =
-        ((parseFloat(listapaquetes[i].precio) * parseFloat(preciopais)) / 100) *
-          parseFloat(listapaquetes[i].prg) +
-        parseFloat(listapaquetes[i].precio) * parseFloat(preciopais);
-      precio = precio.toFixed(2);
-      console.log(precio);
-      descripcion +=
-        "%F0%9F%92%8E%09%2A" +
-        listapaquetes[i].nombre +
-        "%2A%09%E2%9E%A1%EF%B8%8F%09" +
-        abreviacion +
-        "%20" +
-        precio +
-        "%0A";
+    for (let i = 0; i < listapaquetescompra.length; i++) {
+      if (obtenernombre("seccion", listapaquetescompra[i].idp) == "Seccion 1") {
+        descripcion +=
+          obtenernombre("icono", listapaquetescompra[i].idp) +
+          "%09%2A" +
+          obtenernombre("nombre", listapaquetescompra[i].idp) +
+          "%2A%09%E2%9E%A1%EF%B8%8F%09" +
+          obtenerpais("abreviacion", listapaquetescompra[i].idpaisv) +
+          "%20" +
+          listapaquetescompra[i].preciov +
+          "%0A";
+      }
     }
+
+    for (let i = 0; i < listapaquetescompra.length; i++) {
+      if (obtenernombre("seccion", listapaquetescompra[i].idp) == "Seccion 2") {
+        descripcion2 +=
+          obtenernombre("icono", listapaquetescompra[i].idp) +
+          "%09%2A" +
+          obtenernombre("nombre", listapaquetescompra[i].idp) +
+          "%2A%09%E2%9E%A1%EF%B8%8F%09" +
+          obtenerpais("abreviacion", listapaquetescompra[i].idpaisv) +
+          "%20" +
+          listapaquetescompra[i].preciov +
+          "%0A";
+      }
+    }
+
     var metodo =
-      "%0A%2AMETODOS%20DE%20PAGO%3A%20%20Banco%20de%20Venezuela%2A%0A%0A";
-    text = juego + paquetestitle + descripcion + metodo;
+      "%0A%2AMETODOS%20DE%20PAGO%3A%20" +
+      obtenerpais("metodo", idpaisv) +
+      "%2A%0A%0A";
+    text =
+      juego +
+      encabezado +
+      seccion1 +
+      descripcion +
+      seccion2 +
+      descripcion2 +
+      metodo +
+      recordatorio +
+      nota;
     text = text.replace(/\s+/g, "%20");
 
     // window.location =
@@ -103,7 +134,6 @@ const presupuesto = () => {
 
   const getprecioscompra = () => {
     axios.get(`api/precios/${valorid}/${idpaisc}`).then((response) => {
-      console.log(response.data);
       if (response.data.status == 400) {
         setprecioscompra([]);
       } else {
@@ -119,17 +149,12 @@ const presupuesto = () => {
   }; //LISTO
 
   const getpaquetescompra = () => {
-    axios.get(`api/paq/${valorid}/${idpaisc}/${idpaisv}`).then((response) => {
+    axios.get(`api/paq/${valorid}/${idpaisv}/${idpaisc}`).then((response) => {
       if (response.data.status == 400) {
         setListapaquetescompra([]);
       } else {
         setListapaquetescompra(response.data);
       }
-      console.log(idpaisc);
-      console.log(idpaisv);
-      console.log(listapaquetescompra);
-      console.log(typeof listapaquetescompra); // debería ser "object"
-      console.log(Array.isArray(listapaquetescompra)); // debería ser true
     });
   }; //LISTO
 
@@ -157,7 +182,6 @@ const presupuesto = () => {
 
   const getpais = () => {
     axios.get(`api/paises/${valoridp}/`).then((response) => {
-      console.log(valoridp);
       if (response.data.length == 0) {
         setNombrepais("");
         setPreciopais(0);
@@ -180,6 +204,9 @@ const presupuesto = () => {
       }
       if (tipo == "abreviacion" && listapais[i].id == id) {
         return listapais[i].abreviacion;
+      }
+      if (tipo == "metodo" && listapais[i].id == id) {
+        return listapais[i].descripcion;
       }
     }
     if (tipo == "nombre") {
@@ -221,8 +248,6 @@ const presupuesto = () => {
 
     for (let i = 0; i < precioscompra.length; i++) {
       if (precioscompra[i].idp == idp) {
-        console.log(precioscompra[i].preciodos);
-
         return (
           (parseFloat(dolaractual) / parseFloat(dolarcompra)) *
           parseFloat(precioscompra[i].preciodos)
@@ -235,12 +260,10 @@ const presupuesto = () => {
   //LISTO
 
   const obtenerprecio = (precio) => {
-    console.log(precio);
     return (precio * preciopais).toFixed(2);
   };
 
   const obtenerganancia = (precio, prg) => {
-    console.log(precio);
     return (((precio * preciopais) / 100) * prg).toFixed(2);
   };
 
@@ -294,6 +317,12 @@ const presupuesto = () => {
         if (tipo == "precio") {
           return listapaquetes[i].categoria;
         }
+        if (tipo == "seccion") {
+          return listapaquetes[i].seccion;
+        }
+        if (tipo == "icono") {
+          return listapaquetes[i].prg;
+        }
         setPaises({
           nombre: listapaquetes[i].nombre,
           precio: listapaquetes[i].precio,
@@ -307,7 +336,6 @@ const presupuesto = () => {
     for (let i = 0; i < listajuegos.length; i++) {
       if (listajuegos[i].id == valorid) {
         if (tipo == "nombre") {
-          console.log(listajuegos[i].nombre);
           return listajuegos[i].nombre;
         }
         if (tipo == "precio") {
@@ -315,6 +343,15 @@ const presupuesto = () => {
         }
         if (tipo == "prg") {
           return listajuegos[i].prg;
+        }
+        if (tipo == "seccion1") {
+          return listajuegos[i].seccion1;
+        }
+        if (tipo == "seccion2") {
+          return listajuegos[i].seccion2;
+        }
+        if (tipo == "encabezado") {
+          return listajuegos[i].encabezado;
         }
         setPaquetes({
           nombre: listajuegos[i].nombre,
@@ -333,7 +370,6 @@ const presupuesto = () => {
           nombre: listapaquetes[i].nombre,
           precio: listapaquetes[i].precio,
         });
-        console.log(paises);
       }
     }
   }; //LISTO
@@ -346,7 +382,6 @@ const presupuesto = () => {
           precio: listajuegos[i].precio,
           prg: listajuegos[i].prg,
         });
-        console.log(paquetes);
       }
     }
   };
@@ -366,10 +401,8 @@ const presupuesto = () => {
     };
 
     const res = await axios.put(`/api/paq/${id}`, data);
-    console.log(res);
-    if (res.request.status === 200) {
-      console.log("GUARDADO");
 
+    if (res.request.status === 200) {
       msjsave("Precio Actualizado con Exito", "save");
 
       getpaquetescompra();
@@ -377,17 +410,14 @@ const presupuesto = () => {
   };
 
   const confirm2 = async (id) => {
-    console.log(id);
     const asignar = document.getElementById("asignar" + id).value;
     const data = {
       idp: asignar,
     };
 
     const res = await axios.put(`/api/asignacion/${id}`, data);
-    console.log(res);
-    if (res.request.status === 200) {
-      console.log("GUARDADO");
 
+    if (res.request.status === 200) {
       msjsave("Asignacion con Exito", "save");
 
       getjuegos();
@@ -399,12 +429,10 @@ const presupuesto = () => {
     const data = {
       prg: asignar,
     };
-    console.log(data);
-    const res = await axios.put(`/api/juego/${valorid}`, data);
-    console.log(res);
-    if (res.request.status === 200) {
-      console.log("GUARDADO");
 
+    const res = await axios.put(`/api/juego/${valorid}`, data);
+
+    if (res.request.status === 200) {
       msjsave("Porcentaje Modificado con exito", "save");
       getjuegos();
       getprecioscompra();
@@ -414,16 +442,14 @@ const presupuesto = () => {
   //asigna pais venta
   const confirm3 = async () => {
     const asignar2 = document.getElementById("paisbase2").value;
-    console.log(asignar2);
+
     setIdpaisv(asignar2);
     getpaquetescompra();
   };
 
   //asigna pais compra
   const confirm4 = async () => {
-    console.log("SE EJECUTO EL CONFIRM4");
     const asignar = document.getElementById("paisbase").value;
-    console.log(asignar);
     setIdpaisc(asignar);
     getpaquetescompra();
   };
@@ -447,8 +473,6 @@ const presupuesto = () => {
 
     for (let i = 0; i < precioscompra.length; i++) {
       if (precioscompra[i].idp == idp) {
-        console.log(precioscompra[i].preciodos);
-
         return (
           ((parseFloat(dolaractual) / parseFloat(dolarcompra)) *
             parseFloat(precioscompra[i].preciodos) *
@@ -533,7 +557,7 @@ const presupuesto = () => {
           parseFloat(precioscompra[i].preciodos);
       }
     }
-    console.log(preciocompra);
+
     return (parseFloat(precioventa) - parseFloat(preciocompra)).toFixed(2);
   };
 
@@ -576,7 +600,7 @@ const presupuesto = () => {
             <select
               id="juegose"
               onChange={handleChange}
-              class=" w-[50%] block p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className=" w-[50%] block p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
               <option value="0" selected>
                 Sin Seleccion
@@ -590,10 +614,10 @@ const presupuesto = () => {
               onClick={() => {
                 enviarsms();
               }}
-              class="text-white bg-[#3d8b2c] hover:bg-[#5dba48]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#5dba48]/55 me-2 mb-2"
+              className="text-white bg-[#3d8b2c] hover:bg-[#5dba48]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#5dba48]/55 me-2 mb-2"
             >
               <svg
-                class="w-[32px] h-[32px] text-white"
+                className="w-[32px] h-[32px] text-white"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -629,7 +653,7 @@ const presupuesto = () => {
                       okText="Actualizar"
                       showCancel={false}
                       description=<div>
-                        <select id={`paisbase2`}>
+                        <select key="paisunique" id={`paisbase2`}>
                           <option value="0" selected>
                             Seleccione un Pais
                           </option>

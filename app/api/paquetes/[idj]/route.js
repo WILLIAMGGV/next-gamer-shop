@@ -23,12 +23,13 @@ export async function GET(request, { params }) {
 export async function POST(request, { params }) {
   try {
     console.log(request);
-    const { nombre, precio, prg } = await request.json();
-
+    const { nombre, prg, seccion } = await request.json();
+    console.log(nombre + prg + seccion);
     const result = await conn.query("INSERT INTO paquetes SET ?", {
       nombre: nombre,
       prg: prg,
       idj: params.idj,
+      seccion: seccion,
     });
 
     return NextResponse.json({
@@ -54,6 +55,16 @@ export async function DELETE(request, { params }) {
     const result = await conn.query("DELETE FROM paquetes WHERE id = ?", [
       params.idj,
     ]);
+
+    const result2 = await conn.query(
+      "DELETE FROM paquetes_compra WHERE idp = ?",
+      [params.idj]
+    );
+
+    const result3 = await conn.query(
+      "DELETE FROM precios_compra WHERE idp = ?",
+      [params.idj]
+    );
 
     if (result.affectedRows === 0) {
       return NextResponse.json(
@@ -86,6 +97,7 @@ export async function PUT(request, { params }) {
     const updateData = {
       nombre: data.nombre,
       prg: data.prg,
+      seccion: data.seccion,
     };
 
     const result = await conn.query("UPDATE paquetes SET ? WHERE id = ?", [
