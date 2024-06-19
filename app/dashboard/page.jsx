@@ -10,6 +10,7 @@ import Paises from "./paises";
 import Presupuesto from "./presupuesto";
 import Bancos from "./bancos";
 import Facturar from "./facturar";
+import Informe from "./informe";
 
 function Dashboard() {
   const router = useRouter();
@@ -95,6 +96,7 @@ function Dashboard() {
         {selectmenu == "presupuesto" ? <Presupuesto /> : <></>}
         {selectmenu == "bancos" ? <Bancos /> : <></>}
         {selectmenu == "facturar" ? <Facturar /> : <></>}
+        {selectmenu == "informe" ? <Informe /> : <></>}
 
         <div>
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
