@@ -834,7 +834,7 @@ const Facturar = () => {
                       <select key="listabancos2" id="idbanco">
                         {listabancos.map((val2, key) => {
                           return (
-                            <option key={val.id} value={val2.id}>
+                            <option key={val2.id} value={val2.id}>
                               {val2.nombre}
                               {" ("}
                               {obtenerpais("nombre", val2.idp)}
