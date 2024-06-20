@@ -19,7 +19,7 @@ const Informe = () => {
     const fechaFormateada = `${año}-${mes.toString().padStart(2, "0")}-${dia
       .toString()
       .padStart(2, "0")}`;
-    console.log(fechaFormateada);
+
     return fechaFormateada; // Output: la fecha actual en formato dd-mm-yyyy
   };
 
@@ -32,7 +32,7 @@ const Informe = () => {
     const fechaFormateada = `${año}-${mes.toString().padStart(2, "0")}-${dia
       .toString()
       .padStart(2, "0")}`;
-    console.log(fechaFormateada);
+
     return fechaFormateada; // Output: la fecha actual en formato dd-mm-yyyy
   };
 
@@ -42,7 +42,7 @@ const Informe = () => {
     const año = fechaActual.getFullYear();
 
     const fechaFormateada = `${año}`;
-    console.log(fechaFormateada);
+
     return fechaFormateada; // Output: la fecha actual en formato dd-mm-yyyy
   };
 
@@ -77,7 +77,6 @@ const Informe = () => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/ventas/`)
       .then((response) => {
-        console.log(response.data);
         setVentas(response.data);
       });
   };

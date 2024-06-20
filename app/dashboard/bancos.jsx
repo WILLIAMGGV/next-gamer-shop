@@ -111,7 +111,6 @@ const Bancos = () => {
           tipo: listabancos[i].tipo,
           idp: listabancos[i].idp,
         });
-        console.log(bancos);
       }
     }
   };
@@ -120,7 +119,6 @@ const Bancos = () => {
   const form2 = useRef(null);
 
   const handleChange = (e) => {
-    console.log(e.target.value);
     setBancos({
       ...bancos,
       [e.target.name]: e.target.value,
@@ -134,10 +132,8 @@ const Bancos = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/bancos`,
         bancos
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro con Exito", "save");
 
         form.current.reset();
@@ -149,10 +145,8 @@ const Bancos = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/bancos/${valorid}`,
         bancos
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro Actualizado con Exito", "save");
 
         form.current.reset();

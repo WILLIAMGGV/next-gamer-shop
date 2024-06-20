@@ -64,15 +64,19 @@ const Paises = () => {
   }; //LISTO
 
   const getjuegos = () => {
-    axios.get("api/juegos/").then((response) => {
-      setListajuegos(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/`)
+      .then((response) => {
+        setListajuegos(response.data);
+      });
   }; //LISTO
 
   const getpaquetes = () => {
-    axios.get(`api/paquetes/${idjuego}/`).then((response) => {
-      setListapaquetes(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${idjuego}/`)
+      .then((response) => {
+        setListapaquetes(response.data);
+      });
   }; //LISTO
 
   const obtenerpais = (id) => {
@@ -92,25 +96,29 @@ const Paises = () => {
   }; //LISTO
 
   const getasignacion = () => {
-    axios.get(`api/precios/${idjuego}/${idpais}`).then((response) => {
-      console.log(response.data);
-      if (response.data.status == 400) {
-        setListaasignacion([]);
-      } else {
-        setListaasignacion(response.data);
-      }
-    });
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/precios/${idjuego}/${idpais}`
+      )
+      .then((response) => {
+        if (response.data.status == 400) {
+          setListaasignacion([]);
+        } else {
+          setListaasignacion(response.data);
+        }
+      });
   };
 
   const getasignado = () => {
-    axios.get(`api/asignacion/${idjuego}`).then((response) => {
-      console.log(response.data);
-      if (response.data.status == 400) {
-        setAsignado([]);
-      } else {
-        setAsignado(response.data);
-      }
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/asignacion/${idjuego}`)
+      .then((response) => {
+        if (response.data.status == 400) {
+          setAsignado([]);
+        } else {
+          setAsignado(response.data);
+        }
+      });
   };
 
   const contarasignados = () => {
@@ -215,7 +223,6 @@ const Paises = () => {
           nombre: listapaises[i].nombre,
           precio: listapaises[i].precio,
         });
-        console.log(paises);
       }
     }
   }; //LISTO
@@ -228,7 +235,6 @@ const Paises = () => {
           precio: listaasignacion[i].precio,
           prg: listaasignacion[i].prg,
         });
-        console.log(paquetes);
       }
     }
   };
@@ -237,7 +243,6 @@ const Paises = () => {
   const form2 = useRef(null);
 
   const handleChange = (e) => {
-    console.log(e.target.value);
     setPaises({
       ...paises,
       [e.target.name]: e.target.value,
@@ -253,7 +258,6 @@ const Paises = () => {
   }; //LISTO
 
   const handleChange2 = (e) => {
-    console.log(e.target.value);
     setPaquetes({
       ...paquetes,
       [e.target.name]: e.target.value,
@@ -263,11 +267,12 @@ const Paises = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (estado == 0) {
-      const res = await axios.post("/api/paises", paises);
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paises`,
+        paises
+      );
 
+      if (res.request.status === 200) {
         msjsave("Registro con Exito", "save");
 
         form.current.reset();
@@ -275,11 +280,12 @@ const Paises = () => {
         getpaises();
       }
     } else {
-      const res = await axios.put(`/api/paises/${valorid}`, paises);
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paises/${valorid}`,
+        paises
+      );
 
+      if (res.request.status === 200) {
         msjsave("Registro Actualizado con Exito", "save");
 
         form.current.reset();
@@ -292,11 +298,12 @@ const Paises = () => {
   const handleSubmit2 = async (e) => {
     e.preventDefault();
     if (estado2 == 0) {
-      const res = await axios.post(`/api/paquetes/${valorid2}/`, paquetes);
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valorid2}/`,
+        paquetes
+      );
 
+      if (res.request.status === 200) {
         msjsave("Registro de Paquete Exitoso", "save");
 
         form2.current.reset();
@@ -304,11 +311,12 @@ const Paises = () => {
         getpaquetes();
       }
     } else {
-      const res = await axios.put(`/api/paquetes/${valoridp}`, paquetes);
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valoridp}`,
+        paquetes
+      );
 
+      if (res.request.status === 200) {
         msjsave("Registro Actualizado con Exito", "save");
 
         form2.current.reset();
@@ -319,7 +327,9 @@ const Paises = () => {
   };
 
   const selectdelete = async (id) => {
-    const res = await axios.delete(`api/paises/${id}`);
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/paises/${id}`
+    );
 
     if (res.request.status === 204) {
       msjsave("Eliminado con Exito", "save");
@@ -330,7 +340,9 @@ const Paises = () => {
   };
 
   const selectdelete2 = async (id) => {
-    const res = await axios.delete(`api/paquetes/${id}`);
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${id}`
+    );
 
     if (res.request.status === 204) {
       msjsave("Paquete Eliminado con Exito", "save");
@@ -348,17 +360,17 @@ const Paises = () => {
   };
 
   const confirm = async (id) => {
-    console.log(id);
     const precioa = document.getElementById("precio" + id).value;
     const data = {
       precio: precioa,
     };
 
-    const res = await axios.put(`/api/paises/${id}`, data);
-    console.log(res);
-    if (res.request.status === 200) {
-      console.log("GUARDADO");
+    const res = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/paises/${id}`,
+      data
+    );
 
+    if (res.request.status === 200) {
       msjsave("Precio Actualizado con Exito", "save");
 
       getpaises();
@@ -396,11 +408,12 @@ const Paises = () => {
       const data = {
         idp: idpais,
       };
-      const res = await axios.put(`/api/asignacion/${idasig}`, data);
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/asignacion/${idasig}`,
+        data
+      );
 
+      if (res.request.status === 200) {
         msjsave("Pais Asignado para la compra Exitosamente", "save");
 
         getasignado();
@@ -413,11 +426,12 @@ const Paises = () => {
     const data = {
       precioc: precioc,
     };
-    const res = await axios.put(`/api/precios/${id}`, data);
-    console.log(res);
-    if (res.request.status === 200) {
-      console.log("GUARDADO");
+    const res = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/precios/${id}`,
+      data
+    );
 
+    if (res.request.status === 200) {
       msjsave("Registro Actualizado con Exito", "save");
 
       getasignacion();

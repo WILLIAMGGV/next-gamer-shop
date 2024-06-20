@@ -18,7 +18,6 @@ function Dashboard() {
 
   const opcion = (actual) => {
     setSelectmenu(actual);
-    console.log("Actual " + actual);
   };
 
   const getProfile = async () => {
@@ -33,7 +32,6 @@ function Dashboard() {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_KEY}/api/auth/logout`
       );
-      console.log(res);
     } catch (error) {
       console.error(error.message);
     }

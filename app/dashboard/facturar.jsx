@@ -107,7 +107,7 @@ const Facturar = () => {
     const fechaFormateada = `${año}-${mes.toString().padStart(2, "0")}-${dia
       .toString()
       .padStart(2, "0")}`;
-    console.log(fechaFormateada);
+
     return fechaFormateada; // Output: la fecha actual en formato dd-mm-yyyy
   };
 
@@ -160,7 +160,7 @@ const Facturar = () => {
 
   const confirm3 = async () => {
     const asignar = document.getElementById("asignarpais").value;
-    console.log(asignar);
+
     setValoridpais(asignar);
     for (let i = 0; i < listapais.length; i++) {
       if (listapais[i].id === parseInt(asignar)) {
@@ -192,7 +192,6 @@ const Facturar = () => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/factura/${asignar}/`)
       .then((response) => {
-        console.log(response.data.length);
         if (response.data.length == 0) {
           setErrorreferencia(false);
         } else {
@@ -219,7 +218,6 @@ const Facturar = () => {
       .then((response) => {
         if (response.data.length > 0) {
           setListapaquetes(response.data);
-          console.log(response.data);
         } else {
           setListapaquetes([]);
         }
@@ -232,7 +230,6 @@ const Facturar = () => {
       .then((response) => {
         if (response.data.length > 0) {
           setListaprecios(response.data);
-          console.log(response.data);
         } else {
           setListaprecios([]);
         }
@@ -359,7 +356,6 @@ const Facturar = () => {
           categoria: listajuegos[i].categoria,
           prg: listajuegos[i].prg,
         });
-        console.log(juegos);
       }
     }
   };
@@ -372,7 +368,6 @@ const Facturar = () => {
           precio: listapaquetes[i].precio,
           prg: listapaquetes[i].prg,
         });
-        console.log(paquetes);
       }
     }
   };
@@ -409,7 +404,6 @@ const Facturar = () => {
   };
 
   const handleChange2 = (e) => {
-    console.log(e.target.value);
     setPaquetes({
       ...paquetes,
       [e.target.name]: e.target.value,
@@ -423,10 +417,8 @@ const Facturar = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos`,
         juegos
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro con Exito", "save");
 
         form.current.reset();
@@ -438,10 +430,8 @@ const Facturar = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/${valorid}`,
         juegos
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro Actualizado con Exito", "save");
 
         form.current.reset();
@@ -458,10 +448,8 @@ const Facturar = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valorid2}/`,
         paquetes
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro de Paquete Exitoso", "save");
 
         form2.current.reset();
@@ -473,10 +461,8 @@ const Facturar = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valoridp}`,
         paquetes
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro Actualizado con Exito", "save");
 
         form2.current.reset();
@@ -530,10 +516,8 @@ const Facturar = () => {
       `${process.env.NEXT_PUBLIC_API_KEY}/api/temporal`,
       data
     );
-    console.log(res);
-    if (res.request.status === 200) {
-      console.log("GUARDADO");
 
+    if (res.request.status === 200) {
       msjsave("Agregado a la Factura", "save");
 
       getTemporal();
@@ -542,7 +526,7 @@ const Facturar = () => {
 
   const obtenertotalgeneral = () => {
     var total2 = 0;
-    console.log(listatemporal);
+
     for (let i = 0; i < listatemporal.length; i++) {
       total2 = parseFloat(listatemporal[i].precio) + total2;
     }
@@ -576,14 +560,13 @@ const Facturar = () => {
         listatemporal,
       };
       setListaTemporal2(listatemporal);
-      console.log(data);
+
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_KEY}/api/factura`,
         data
       );
-      console.log(res);
+
       if (res.request.status === 200) {
-        console.log("GUARDADO");
         setErrorreferencia(false);
         setReferencia(0);
         getTemporal();

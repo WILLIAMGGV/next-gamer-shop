@@ -68,9 +68,8 @@ const Juegos = () => {
     }
 
     const encodedEmoji = encodeURIComponent(emoji.emoji);
-    console.log(`Emoji seleccionado: ${encodedEmoji} ${valoremoji}`);
+
     const decodeurl = decodeURIComponent(encodedEmoji);
-    console.log(`Emoji Decodificado: ${decodeurl}`);
   };
 
   const handleSelect2 = (emoji) => {
@@ -78,10 +77,8 @@ const Juegos = () => {
     setValoremoji2(emoji.emoji);
     const encodedEmoji = encodeURIComponent(emoji.emoji);
 
-    console.log(`Emoji seleccionado: ${encodedEmoji} ${valoremoji}`);
     setEncodedEmoji2(encodeURIComponent(emoji.emoji));
     const decodeurl = decodeURIComponent(encodedEmoji);
-    console.log(`Emoji Decodificado: ${decodeurl}`);
   };
 
   const getjuegos = () => {
@@ -90,7 +87,6 @@ const Juegos = () => {
       .then((response) => {
         setListajuegos(response.data);
       });
-    console.log(process.env.NEXT_PUBLIC_API_KEY);
   };
 
   const getpaquetes = () => {
@@ -195,7 +191,6 @@ const Juegos = () => {
           categoria: listajuegos[i].categoria,
           prg: listajuegos[i].prg,
         });
-        console.log(juegos);
       }
     }
   };
@@ -209,7 +204,6 @@ const Juegos = () => {
           prg: listapaquetes[i].prg,
           seccion: listapaquetes[i].seccion,
         });
-        console.log(paquetes);
       }
     }
   };
@@ -218,7 +212,6 @@ const Juegos = () => {
   const form2 = useRef(null);
 
   const handleChange = (e) => {
-    console.log(e.target.value);
     setJuegos({
       ...juegos,
       [e.target.name]: e.target.value,
@@ -226,7 +219,6 @@ const Juegos = () => {
   };
 
   const handleChange2 = (e) => {
-    console.log(e.target.value);
     setPaquetes({
       ...paquetes,
       [e.target.name]: e.target.value,
@@ -240,10 +232,8 @@ const Juegos = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos`,
         juegos
       );
-      console.log(juegos);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro con Exito", "save");
 
         form.current.reset();
@@ -255,10 +245,8 @@ const Juegos = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/${valorid}`,
         juegos
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro Actualizado con Exito", "save");
 
         form.current.reset();
@@ -272,15 +260,13 @@ const Juegos = () => {
     e.preventDefault();
     if (estado2 == 0) {
       paquetes.prg = encodedEmoji1;
-      console.log(paquetes);
+
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valorid2}/`,
         paquetes
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro de Paquete Exitoso", "save");
 
         form2.current.reset();
@@ -293,10 +279,8 @@ const Juegos = () => {
         `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valoridp}`,
         paquetes
       );
-      console.log(res);
-      if (res.request.status === 200) {
-        console.log("GUARDADO");
 
+      if (res.request.status === 200) {
         msjsave("Registro Actualizado con Exito", "save");
 
         form2.current.reset();
