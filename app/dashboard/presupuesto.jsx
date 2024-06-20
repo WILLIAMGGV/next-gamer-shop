@@ -607,7 +607,11 @@ const Presupuesto = () => {
                 Sin Seleccion
               </option>
               {listajuegos.map((val, key) => {
-                return <option value={val.id}>{val.nombre}</option>;
+                return (
+                  <option key={val.id} value={val.id}>
+                    {val.nombre}
+                  </option>
+                );
               })}
             </select>
             <button
@@ -654,13 +658,15 @@ const Presupuesto = () => {
                       okText="Actualizar"
                       showCancel={false}
                       description=<div>
-                        <select key="paisunique" id={`paisbase2`}>
-                          <option value="0" selected>
+                        <select id={`paisbase2`}>
+                          <option key="paisunique" value="0" selected>
                             Seleccione un Pais
                           </option>
                           {listapais.map((val2, key) => {
                             return (
-                              <option value={val2.id}>{val2.nombre}</option>
+                              <option key={val2.id} value={val2.id}>
+                                {val2.nombre}
+                              </option>
                             );
                           })}
                         </select>
@@ -689,13 +695,15 @@ const Presupuesto = () => {
                       okText="Actualizar"
                       showCancel={false}
                       description=<div>
-                        <select id={`paisbase`}>
-                          <option value="0" selected>
+                        <select key="paisbase" id={`paisbase`}>
+                          <option key="paisbase2" value="0" selected>
                             Seleccione un Pais
                           </option>
                           {listapais2.map((val2, key) => {
                             return (
-                              <option value={val2.id}>{val2.nombre}</option>
+                              <option key={val2.id} value={val2.id}>
+                                {val2.nombre}
+                              </option>
                             );
                           })}
                         </select>

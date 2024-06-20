@@ -357,7 +357,7 @@ const Informe = () => {
                   <table width="300px" className=" max-md:w-[200px]">
                     {listadetalles.map((val, key) => {
                       return (
-                        <tr>
+                        <tr key={val.id}>
                           <td colSpan={2} className="italic font-bold">
                             {obtenernombre3("nombre", val.idp)}
                           </td>

@@ -633,11 +633,15 @@ const Facturar = () => {
               onChange={handleChange}
               className=" w-[50%] block p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
-              <option value="0" selected>
+              <option key="listajuegos2" value="0" selected>
                 Sin Seleccion
               </option>
               {listajuegos.map((val, key) => {
-                return <option value={val.id}>{val.nombre}</option>;
+                return (
+                  <option key={val.id} value={val.id}>
+                    {val.nombre}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -656,10 +660,12 @@ const Facturar = () => {
                       okText="Actualizar"
                       showCancel={false}
                       description=<div>
-                        <select id={`asignarpais`}>
+                        <select key="listapais2" id={`asignarpais`}>
                           {listapais.map((val2, key) => {
                             return (
-                              <option value={val2.id}>{val2.nombre}</option>
+                              <option key={val2.id} value={val2.id}>
+                                {val2.nombre}
+                              </option>
                             );
                           })}
                         </select>
@@ -825,10 +831,10 @@ const Facturar = () => {
                     okText="Actualizar"
                     showCancel={false}
                     description=<div>
-                      <select id="idbanco">
+                      <select key="listabancos2" id="idbanco">
                         {listabancos.map((val2, key) => {
                           return (
-                            <option value={val2.id}>
+                            <option key={val.id} value={val2.id}>
                               {val2.nombre}
                               {" ("}
                               {obtenerpais("nombre", val2.idp)}
@@ -996,7 +1002,7 @@ const Facturar = () => {
                   <table width="100%">
                     {listatemporal2.map((val, key) => {
                       return (
-                        <tr>
+                        <tr key={val.id}>
                           <td colSpan={2} className="italic font-bold">
                             {obtenernombre3("nombre", val.idp)}
                           </td>

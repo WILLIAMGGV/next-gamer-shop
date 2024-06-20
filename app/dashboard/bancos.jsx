@@ -596,15 +596,19 @@ const Bancos = () => {
                           {estado == 1
                             ? listapais.map((val, key) =>
                                 val.id == valoridp ? (
-                                  <option value={val.id} selected>
+                                  <option key={val.id} value={val.id} selected>
                                     {val.nombre}
                                   </option>
                                 ) : (
-                                  <option value={val.id}>{val.nombre}</option>
+                                  <option key={val.id} value={val.id}>
+                                    {val.nombre}
+                                  </option>
                                 )
                               )
                             : listapais.map((val, key) => (
-                                <option value={val.id}>{val.nombre}</option>
+                                <option key={val.id} value={val.id}>
+                                  {val.nombre}
+                                </option>
                               ))}
                         </select>
                       </div>

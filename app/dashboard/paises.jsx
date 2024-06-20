@@ -582,7 +582,11 @@ const Paises = () => {
                         Sin Seleccion
                       </option>
                       {listajuegos.map((val, key) => {
-                        return <option value={val.id}>{val.nombre}</option>;
+                        return (
+                          <option key={val.id} value={val.id}>
+                            {val.nombre}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
@@ -605,7 +609,11 @@ const Paises = () => {
                   description=<div>
                     <select id="asignarpais" onChange={handleChangepais}>
                       {listapaises.map((val2, key) => {
-                        return <option value={val2.id}>{val2.nombre}</option>;
+                        return (
+                          <option key={val2.id} value={val2.id}>
+                            {val2.nombre}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
