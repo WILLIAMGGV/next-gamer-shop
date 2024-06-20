@@ -1,3 +1,4 @@
+"use client";
 const menu = ({ opcion }) => {
   return (
     <div className="flex flex-wrap place-content-center max-md:place-content-around w-full p-2 bg-sky-950  rounded-lg ">

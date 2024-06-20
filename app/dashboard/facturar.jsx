@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import logo from "../img/V1.png";
 import React, { useRef, useEffect } from "react";
