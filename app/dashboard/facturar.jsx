@@ -8,7 +8,7 @@ import { Button, Popconfirm } from "antd";
 import { Tooltip } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 
-const facturar = () => {
+const Facturar = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showModal2, setShowModal2] = React.useState(false);
   const [showModal3, setShowModal3] = React.useState(false);
@@ -1073,4 +1073,4 @@ const facturar = () => {
   );
 };
 
-export default facturar;
+export default Facturar;

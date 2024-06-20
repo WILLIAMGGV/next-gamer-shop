@@ -6,7 +6,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const bancos = () => {
+const Bancos = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showModal2, setShowModal2] = React.useState(false);
   const [showModal3, setShowModal3] = React.useState(false);
@@ -732,4 +732,4 @@ const bancos = () => {
   );
 };
 
-export default bancos;
+export default Bancos;

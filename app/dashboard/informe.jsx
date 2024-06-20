@@ -7,7 +7,7 @@ import { DatePicker, Space } from "antd";
 import { Chart } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 
-const informe = () => {
+const Informe = () => {
   const [showModal, setShowModal] = React.useState(false);
 
   const obtenerfechaactual = () => {
@@ -403,4 +403,4 @@ const informe = () => {
   );
 };
 
-export default informe;
+export default Informe;

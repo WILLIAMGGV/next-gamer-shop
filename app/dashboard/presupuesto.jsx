@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button, Popconfirm, Tooltip } from "antd";
 
-const presupuesto = () => {
+const Presupuesto = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showModal2, setShowModal2] = React.useState(false);
   const [showModal3, setShowModal3] = React.useState(false);
@@ -820,4 +820,4 @@ const presupuesto = () => {
   );
 };
 
-export default presupuesto;
+export default Presupuesto;

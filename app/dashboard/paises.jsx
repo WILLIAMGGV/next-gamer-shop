@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button, Popconfirm } from "antd";
 
-const paises = () => {
+const Paises = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showModal2, setShowModal2] = React.useState(false);
   const [showModal3, setShowModal3] = React.useState(false);
@@ -1272,4 +1272,4 @@ const paises = () => {
   );
 };
 
-export default paises;
+export default Paises;
