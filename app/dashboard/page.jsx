@@ -54,7 +54,7 @@ function Dashboard() {
                 alt=""
               />
               <div className="font-medium dark:text-white">
-                <div className="text-white max-md:hidden">William Godoy</div>
+                <div className="text-white max-md:hidden">Top Power Gamers</div>
                 <div className="text-sm text-gray-500 dark:text-gray-400 max-md:hidden">
                   Administrador
                 </div>
@@ -89,7 +89,7 @@ function Dashboard() {
           <spna className=" text-purple-500 text-2xl">
             Bienvenido&nbsp;&nbsp;
           </spna>{" "}
-          <span className=" text-blue-500">William Godoy</span>
+          <span className=" text-blue-500">ADMINISTRADOR</span>
         </h4>
 
         <Menu opcion={opcion} />
