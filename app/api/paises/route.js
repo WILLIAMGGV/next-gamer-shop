@@ -4,9 +4,9 @@ import { conn } from "../../libs/mysql";
 export async function GET() {
   try {
     const results = await conn.query("SELECT * FROM paises");
-    return NextResponse.json(results);
+    return NextResponse.json(results[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,
@@ -34,7 +34,7 @@ export async function POST(request) {
       precio: precio,
       abreviacion: abreviacion,
       descripcion: descripcion,
-      id: result.insertId,
+      id: result[0].insertId,
     });
   } catch (error) {
     return NextResponse.json(

@@ -7,7 +7,7 @@ export async function DELETE(request, { params }) {
       params.idt,
     ]);
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Producto no encontrado",

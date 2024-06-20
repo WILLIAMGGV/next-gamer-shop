@@ -14,7 +14,7 @@ export async function PUT(request, { params }) {
       params.idasig,
     ]);
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Producto no encontrado",
@@ -50,7 +50,7 @@ export async function GET(request, { params }) {
       params.idasig,
     ]);
 
-    if (results.affectedRows === 0) {
+    if (results[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Producto no encontrado",
@@ -60,7 +60,7 @@ export async function GET(request, { params }) {
         }
       );
     }
-    return NextResponse.json(results);
+    return NextResponse.json(results[0]);
   } catch (error) {
     console.log(error);
     return NextResponse.json(

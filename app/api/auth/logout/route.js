@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 export function GET(request) {
   const cookieStore = cookies();
   const token = cookieStore.get("myTokenName");
-  console.log(token);
 
   if (!token) {
     return NextResponse.json(

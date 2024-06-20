@@ -7,7 +7,7 @@ export async function DELETE(request, { params }) {
       params.idbanco,
     ]);
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Banco no encontrado",
@@ -47,7 +47,7 @@ export async function PUT(request, { params }) {
       params.idbanco,
     ]);
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Banco no encontrado",
@@ -71,7 +71,7 @@ export async function PUT(request, { params }) {
       }
     );
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,

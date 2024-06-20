@@ -4,9 +4,9 @@ import { conn } from "../../libs/mysql";
 export async function GET() {
   try {
     const results = await conn.query("SELECT * FROM bancos");
-    return NextResponse.json(results);
+    return NextResponse.json(results[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,
@@ -20,7 +20,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    console.log(request);
+    //console.log(request);
     const { nombre, cuenta, tipo, idp } = await request.json();
 
     const result = await conn.query("INSERT INTO bancos SET ?", {
@@ -35,7 +35,7 @@ export async function POST(request) {
       cuenta: cuenta,
       tipo: tipo,
       idp: idp,
-      id: result.insertId,
+      id: result[0].insertId,
     });
   } catch (error) {
     return NextResponse.json(

@@ -4,10 +4,10 @@ import { conn } from "../../libs/mysql";
 export async function GET() {
   try {
     const results = await conn.query("SELECT * FROM juegos");
-
-    return NextResponse.json(results);
+    //console.log(results[0]);
+    return NextResponse.json(results[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,
@@ -21,7 +21,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    console.log(request);
+    //console.log(request);
     const { nombre, categoria, prg, seccion1, seccion2, encabezado } =
       await request.json();
 
@@ -34,17 +34,19 @@ export async function POST(request) {
       encabezado: encabezado,
     });
 
+    //console.log(result[0].insertId);
+
     const result2 = await conn.query("INSERT INTO asignacion SET ?", {
       idp: 0,
       nombre: nombre,
-      idj: result.insertId,
+      idj: result[0].insertId,
     });
 
     return NextResponse.json({
       nombre: nombre,
       categoria: categoria,
       prg: prg,
-      id: result.insertId,
+      id: result[0].insertId,
     });
   } catch (error) {
     return NextResponse.json(

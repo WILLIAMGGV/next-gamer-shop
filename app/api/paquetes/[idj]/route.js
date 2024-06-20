@@ -6,9 +6,9 @@ export async function GET(request, { params }) {
     const results = await conn.query("SELECT * FROM paquetes WHERE idj=?", [
       params.idj,
     ]);
-    return NextResponse.json(results);
+    return NextResponse.json(results[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,
@@ -22,9 +22,9 @@ export async function GET(request, { params }) {
 
 export async function POST(request, { params }) {
   try {
-    console.log(request);
+    //console.log(request);
     const { nombre, prg, seccion } = await request.json();
-    console.log(nombre + prg + seccion);
+    //console.log(nombre + prg + seccion);
     const result = await conn.query("INSERT INTO paquetes SET ?", {
       nombre: nombre,
       prg: prg,
@@ -36,7 +36,7 @@ export async function POST(request, { params }) {
       nombre: nombre,
       prg: prg,
       idj: params.idj,
-      id: result.insertId,
+      id: result[0].insertId,
     });
   } catch (error) {
     return NextResponse.json(
@@ -66,7 +66,7 @@ export async function DELETE(request, { params }) {
       [params.idj]
     );
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Producto no encontrado",
@@ -105,7 +105,7 @@ export async function PUT(request, { params }) {
       params.idj,
     ]);
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Producto no encontrado",
@@ -125,7 +125,7 @@ export async function PUT(request, { params }) {
       }
     );
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,

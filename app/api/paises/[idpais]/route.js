@@ -12,7 +12,7 @@ export async function DELETE(request, { params }) {
       [params.idpais]
     );
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Producto no encontrado",
@@ -49,7 +49,7 @@ export async function PUT(request, { params }) {
       params.idpais,
     ]);
 
-    if (result.affectedRows === 0) {
+    if (result[0].affectedRows === 0) {
       return NextResponse.json(
         {
           message: "Producto no encontrado",
@@ -69,7 +69,7 @@ export async function PUT(request, { params }) {
       }
     );
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,
@@ -84,10 +84,10 @@ export async function GET(request, { params }) {
     const results = await conn.query("SELECT * FROM paises where id=?", [
       params.idpais,
     ]);
-    console.log(params.idpais);
-    return NextResponse.json(results);
+    //console.log(params.idpais);
+    return NextResponse.json(results[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,

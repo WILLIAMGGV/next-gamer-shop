@@ -12,12 +12,12 @@ export async function GET() {
         [i, currentYear]
       );
 
-      ventas.push(results.length);
+      ventas.push(results[0].length);
     }
-    console.log(ventas);
-    return NextResponse.json(ventas);
+    //console.log(ventas);
+    return NextResponse.json(ventas[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,

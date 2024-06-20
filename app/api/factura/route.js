@@ -6,7 +6,7 @@ export async function POST(request) {
     const { fecha, referencia, total, telefono, listatemporal } =
       await request.json();
 
-    console.log(
+    /*console.log(
       fecha +
         " " +
         referencia +
@@ -16,7 +16,7 @@ export async function POST(request) {
         telefono +
         " " +
         listatemporal
-    );
+    );*/
 
     const result = await conn.query("INSERT INTO facturas SET ?", {
       fecha: fecha,
@@ -27,7 +27,7 @@ export async function POST(request) {
 
     for (let i = 0; i < listatemporal.length; i++) {
       await conn.query("INSERT INTO detalles SET ?", {
-        idf: result.insertId,
+        idf: result[0].insertId,
         idp: listatemporal[i].idp,
         precio: listatemporal[i].precio,
         precioc: listatemporal[i].precioc,
@@ -42,7 +42,7 @@ export async function POST(request) {
       referencia: referencia,
       total: total,
       telefono: telefono,
-      id: result.insertId,
+      id: result[0].insertId,
     });
   } catch (error) {
     return NextResponse.json(

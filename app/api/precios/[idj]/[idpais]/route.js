@@ -12,18 +12,18 @@ export async function GET(request, { params }) {
       const results = await conn.query("SELECT * FROM paquetes WHERE idj=?", [
         params.idj,
       ]);
-      if (results.length > 0) {
-        for (let i = 0; i < results.length; i++) {
+      if (results[0].length > 0) {
+        for (let i = 0; i < results[0].length; i++) {
           const verifica = await conn.query(
             "SELECT * FROM precios_compra WHERE idj=? and idp=? and idpais=?",
-            [params.idj, results[i].id, params.idpais]
+            [params.idj, results[0][i].id, params.idpais]
           );
-          if (verifica.length == 0) {
+          if (verifica[0].length == 0) {
             const guarda = await conn.query(
               "INSERT INTO precios_compra SET ?",
               {
                 idj: params.idj,
-                idp: results[i].id,
+                idp: results[0][i].id,
                 idpais: params.idpais,
               }
             );
@@ -34,9 +34,9 @@ export async function GET(request, { params }) {
         "SELECT * FROM precios_compra WHERE idj=? and idpais= ?",
         [params.idj, params.idpais]
       );
-      return NextResponse.json(resultstotal);
+      return NextResponse.json(resultstotal[0]);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       return NextResponse.json(
         {
           message: error.message,

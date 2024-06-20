@@ -6,7 +6,7 @@ export async function GET(request, { params }) {
     const results = await conn.query("SELECT * FROM detalles WHERE idf=?", [
       params.idfactura,
     ]);
-    return NextResponse.json(results);
+    return NextResponse.json(results[0]);
   } catch (error) {
     console.log(error);
     return NextResponse.json(

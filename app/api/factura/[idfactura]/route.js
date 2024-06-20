@@ -7,9 +7,9 @@ export async function GET(request, { params }) {
       "SELECT * FROM facturas WHERE referencia=?",
       [params.idfactura]
     );
-    return NextResponse.json(results);
+    return NextResponse.json(results[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   const { email, password } = await request.json();
 
-  if (email === "admin@gmail.com" && password === "admin") {
+  if (email === "admin@toppowergamers.com" && password === "topfree-2024v") {
     // expire in 30 days
     const token = sign(
       {

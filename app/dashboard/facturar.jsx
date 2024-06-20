@@ -501,9 +501,10 @@ const facturar = () => {
   };
 
   const obtenertotalgeneral = () => {
-    var total2 = 0.0;
+    var total2 = 0;
+    console.log(listatemporal);
     for (let i = 0; i < listatemporal.length; i++) {
-      total2 = listatemporal[i].precio + total2;
+      total2 = parseFloat(listatemporal[i].precio) + total2;
     }
 
     return total2.toFixed(2);

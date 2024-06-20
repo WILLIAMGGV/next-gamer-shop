@@ -7,9 +7,9 @@ export async function GET(request, { params }) {
       "SELECT * FROM precios_compra WHERE idj=? and idpais= ?",
       [params.idj, params.idpais]
     );
-    return NextResponse.json(resultstotal);
+    return NextResponse.json(resultstotal[0]);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return NextResponse.json(
       {
         message: error.message,

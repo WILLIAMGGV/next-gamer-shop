@@ -621,7 +621,11 @@ const juegos = () => {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit} className="p-0 md:p-5" ref={form}>
+                  <form
+                    onSubmit={handleSubmit}
+                    className="p-0 md:p-5"
+                    ref={form}
+                  >
                     <div className="grid gap-4 mb-4 grid-cols-2">
                       <div className="col-span-2">
                         <label
@@ -997,7 +1001,11 @@ const juegos = () => {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <form onSubmit={handleSubmit2} className="p-0 md:p-5" ref={form2}>
+                  <form
+                    onSubmit={handleSubmit2}
+                    className="p-0 md:p-5"
+                    ref={form2}
+                  >
                     <div className="grid gap-4 mb-4 grid-cols-2">
                       <div className="col-span-2 sm:col-span-1">
                         <label
