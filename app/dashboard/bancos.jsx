@@ -46,15 +46,19 @@ const bancos = () => {
   };
 
   const getbancos = () => {
-    axios.get("api/bancos/").then((response) => {
-      setListabancos(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/bancos/`)
+      .then((response) => {
+        setListabancos(response.data);
+      });
   };
 
   const getpais = () => {
-    axios.get("api/paises/").then((response) => {
-      setListapais(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/paises/`)
+      .then((response) => {
+        setListapais(response.data);
+      });
   };
 
   const editarpaquete = () => {};
@@ -126,7 +130,10 @@ const bancos = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (estado == 0) {
-      const res = await axios.post("/api/bancos", bancos);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/bancos`,
+        bancos
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -138,7 +145,10 @@ const bancos = () => {
         getbancos();
       }
     } else {
-      const res = await axios.put(`/api/bancos/${valorid}`, bancos);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/bancos/${valorid}`,
+        bancos
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -153,7 +163,9 @@ const bancos = () => {
   };
 
   const selectdelete = async (id) => {
-    const res = await axios.delete(`api/bancos/${id}`);
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/bancos/${id}`
+    );
 
     if (res.request.status === 204) {
       msjsave("Eliminado con Exito", "save");

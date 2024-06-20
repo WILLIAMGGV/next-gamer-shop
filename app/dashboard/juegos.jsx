@@ -85,15 +85,20 @@ const juegos = () => {
   };
 
   const getjuegos = () => {
-    axios.get("api/juegos/").then((response) => {
-      setListajuegos(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/`)
+      .then((response) => {
+        setListajuegos(response.data);
+      });
+    console.log(process.env.NEXT_PUBLIC_API_KEY);
   };
 
   const getpaquetes = () => {
-    axios.get(`api/paquetes/${valorid2}/`).then((response) => {
-      setListapaquetes(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valorid2}/`)
+      .then((response) => {
+        setListapaquetes(response.data);
+      });
   };
 
   const editarpaquete = () => {};
@@ -231,7 +236,10 @@ const juegos = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (estado == 0) {
-      const res = await axios.post("/api/juegos", juegos);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos`,
+        juegos
+      );
       console.log(juegos);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -243,7 +251,10 @@ const juegos = () => {
         getjuegos();
       }
     } else {
-      const res = await axios.put(`/api/juegos/${valorid}`, juegos);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/${valorid}`,
+        juegos
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -262,7 +273,10 @@ const juegos = () => {
     if (estado2 == 0) {
       paquetes.prg = encodedEmoji1;
       console.log(paquetes);
-      const res = await axios.post(`/api/paquetes/${valorid2}/`, paquetes);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valorid2}/`,
+        paquetes
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -275,7 +289,10 @@ const juegos = () => {
       }
     } else {
       paquetes.prg = encodedEmoji2;
-      const res = await axios.put(`/api/paquetes/${valoridp}`, paquetes);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valoridp}`,
+        paquetes
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -290,7 +307,9 @@ const juegos = () => {
   };
 
   const selectdelete = async (id) => {
-    const res = await axios.delete(`api/juegos/${id}`);
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/${id}`
+    );
 
     if (res.request.status === 204) {
       msjsave("Eliminado con Exito", "save");
@@ -301,7 +320,9 @@ const juegos = () => {
   };
 
   const selectdelete2 = async (id) => {
-    const res = await axios.delete(`api/paquetes/${id}`);
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${id}`
+    );
 
     if (res.request.status === 204) {
       msjsave("Paquete Eliminado con Exito", "save");

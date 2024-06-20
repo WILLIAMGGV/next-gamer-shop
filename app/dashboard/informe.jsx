@@ -74,10 +74,12 @@ const informe = () => {
   const [valorid, setValorid] = React.useState(obtenerfechaactual());
 
   const obtenerventas = () => {
-    axios.get(`api/ventas/`).then((response) => {
-      console.log(response.data);
-      setVentas(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/ventas/`)
+      .then((response) => {
+        console.log(response.data);
+        setVentas(response.data);
+      });
   };
 
   const data = {
@@ -123,13 +125,15 @@ const informe = () => {
 
   const getfacturas = () => {
     if (valorid != "") {
-      axios.get(`api/buscafactura/${valorid}`).then((response) => {
-        if (response.data.length > 0) {
-          setListafacturas(response.data);
-        } else {
-          setListafacturas([]);
-        }
-      });
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/buscafactura/${valorid}`)
+        .then((response) => {
+          if (response.data.length > 0) {
+            setListafacturas(response.data);
+          } else {
+            setListafacturas([]);
+          }
+        });
     }
   };
 
@@ -151,15 +155,19 @@ const informe = () => {
   };
 
   const mostrarfactura = (idfactura) => {
-    axios.get(`api/buscadetalles/${idfactura}`).then((response) => {
-      setListadetalles(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/buscadetalles/${idfactura}`)
+      .then((response) => {
+        setListadetalles(response.data);
+      });
   };
 
   const getpaquetes2 = () => {
-    axios.get(`api/paquetes/`).then((response) => {
-      setListapaquetes(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/`)
+      .then((response) => {
+        setListapaquetes(response.data);
+      });
   };
 
   const obtenernombre3 = (tipo, idpa) => {

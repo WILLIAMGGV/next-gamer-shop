@@ -127,27 +127,35 @@ const facturar = () => {
   };
 
   const getjuegos = () => {
-    axios.get("api/juegos/").then((response) => {
-      setListajuegos(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/`)
+      .then((response) => {
+        setListajuegos(response.data);
+      });
   };
 
   const getbancos = () => {
-    axios.get("api/bancos/").then((response) => {
-      setListabancos(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/bancos/`)
+      .then((response) => {
+        setListabancos(response.data);
+      });
   };
 
   const getpaises = () => {
-    axios.get("api/paises/").then((response) => {
-      setListapais(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/paises/`)
+      .then((response) => {
+        setListapais(response.data);
+      });
   };
 
   const getTemporal = () => {
-    axios.get("api/temporal/").then((response) => {
-      setListaTemporal(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/temporal/`)
+      .then((response) => {
+        setListaTemporal(response.data);
+      });
   };
 
   const confirm3 = async () => {
@@ -181,27 +189,33 @@ const facturar = () => {
 
     setReferencia(asignar);
 
-    axios.get(`api/factura/${asignar}/`).then((response) => {
-      console.log(response.data.length);
-      if (response.data.length == 0) {
-        setErrorreferencia(false);
-      } else {
-        setErrorreferencia(true);
-      }
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/factura/${asignar}/`)
+      .then((response) => {
+        console.log(response.data.length);
+        if (response.data.length == 0) {
+          setErrorreferencia(false);
+        } else {
+          setErrorreferencia(true);
+        }
+      });
   };
 
   const getpaquetes = () => {
-    axios.get(`api/asignacion/${valorid}/`).then((response) => {
-      if (response.data.length > 0) {
-        setAsignado(response.data[0].idp);
-      }
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/asignacion/${valorid}/`)
+      .then((response) => {
+        if (response.data.length > 0) {
+          setAsignado(response.data[0].idp);
+        }
+      });
   };
 
   const getpaquetescompra = () => {
     axios
-      .get(`api/pack/${valorid}/${valoridpais}/${asignado}`)
+      .get(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/pack/${valorid}/${valoridpais}/${asignado}`
+      )
       .then((response) => {
         if (response.data.length > 0) {
           setListapaquetes(response.data);
@@ -211,20 +225,26 @@ const facturar = () => {
         }
       });
 
-    axios.get(`api/preciost/${valorid}/${asignado}`).then((response) => {
-      if (response.data.length > 0) {
-        setListaprecios(response.data);
-        console.log(response.data);
-      } else {
-        setListaprecios([]);
-      }
-    });
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/preciost/${valorid}/${asignado}`
+      )
+      .then((response) => {
+        if (response.data.length > 0) {
+          setListaprecios(response.data);
+          console.log(response.data);
+        } else {
+          setListaprecios([]);
+        }
+      });
   };
 
   const getpaquetes2 = () => {
-    axios.get(`api/paquetes/`).then((response) => {
-      setListapaquetes2(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/`)
+      .then((response) => {
+        setListapaquetes2(response.data);
+      });
   };
 
   const editarpaquete = () => {};
@@ -399,7 +419,10 @@ const facturar = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (estado == 0) {
-      const res = await axios.post("/api/juegos", juegos);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos`,
+        juegos
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -411,7 +434,10 @@ const facturar = () => {
         getjuegos();
       }
     } else {
-      const res = await axios.put(`/api/juegos/${valorid}`, juegos);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/juegos/${valorid}`,
+        juegos
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -428,7 +454,10 @@ const facturar = () => {
   const handleSubmit2 = async (e) => {
     e.preventDefault();
     if (estado2 == 0) {
-      const res = await axios.post(`/api/paquetes/${valorid2}/`, paquetes);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valorid2}/`,
+        paquetes
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -440,7 +469,10 @@ const facturar = () => {
         getpaquetes();
       }
     } else {
-      const res = await axios.put(`/api/paquetes/${valoridp}`, paquetes);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${valoridp}`,
+        paquetes
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");
@@ -455,7 +487,9 @@ const facturar = () => {
   };
 
   const selectdelete = async (id) => {
-    const res = await axios.delete(`api/temporal/${id}`);
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/temporal/${id}`
+    );
 
     if (res.request.status === 204) {
       msjsave("Eliminado de la factura con Exito", "save");
@@ -464,7 +498,9 @@ const facturar = () => {
   };
 
   const selectdelete2 = async (id) => {
-    const res = await axios.delete(`api/paquetes/${id}`);
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/paquetes/${id}`
+    );
 
     if (res.request.status === 204) {
       msjsave("Paquete Eliminado con Exito", "save");
@@ -490,7 +526,10 @@ const facturar = () => {
       abreviacion,
     };
 
-    const res = await axios.post("/api/temporal", data);
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/temporal`,
+      data
+    );
     console.log(res);
     if (res.request.status === 200) {
       console.log("GUARDADO");
@@ -538,7 +577,10 @@ const facturar = () => {
       };
       setListaTemporal2(listatemporal);
       console.log(data);
-      const res = await axios.post("/api/factura", data);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/factura`,
+        data
+      );
       console.log(res);
       if (res.request.status === 200) {
         console.log("GUARDADO");

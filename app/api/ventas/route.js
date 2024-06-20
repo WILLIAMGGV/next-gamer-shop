@@ -15,7 +15,7 @@ export async function GET() {
       ventas.push(results[0].length);
     }
     //console.log(ventas);
-    return NextResponse.json(ventas[0]);
+    return NextResponse.json(ventas);
   } catch (error) {
     //console.log(error);
     return NextResponse.json(

@@ -22,18 +22,22 @@ function Dashboard() {
   };
 
   const getProfile = async () => {
-    const profile = await axios.get("/api/profile");
+    const profile = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/profile`
+    );
     setUser(profile.data);
   };
 
   const logout = async () => {
     try {
-      const res = await axios.get("/api/auth/logout");
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/auth/logout`
+      );
       console.log(res);
     } catch (error) {
       console.error(error.message);
     }
-    router.push("/login");
+    router.push(`${process.env.NEXT_PUBLIC_API_KEY}/login`);
   };
 
   return (
