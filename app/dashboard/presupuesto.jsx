@@ -274,9 +274,10 @@ const Presupuesto = () => {
       .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/asignacion/${valorid}/`)
       .then((response) => {
         if (response.data.length == 0) {
-          setValoridp(0);
+          setIdpaisc(0);
         } else {
-          setValoridp(response.data[0].idp);
+          //setValoridp(response.data[0].idp);
+          setIdpaisc(response.data[0].idp);
         }
       });
   }; //LISTO
@@ -600,6 +601,13 @@ const Presupuesto = () => {
     return null;
   };
 
+  const convertirusd = (idp, preciov) => {
+    var dolaractual = obtenerpais("precio", idp);
+    console.log(dolaractual);
+    var conversion = parseFloat(preciov) / parseFloat(dolaractual);
+    return conversion.toFixed(2);
+  };
+
   const obtenerprg = (idp) => {
     var precioventa = 0;
     var preciocompra = 0;
@@ -685,7 +693,7 @@ const Presupuesto = () => {
   useEffect(() => {
     getpaquetes();
     //getpaquetescompra();
-    //getasignacion();
+    getasignacion();
   }, [valorid]);
 
   useEffect(() => {
@@ -873,6 +881,9 @@ const Presupuesto = () => {
                   <th scope="col" className="px-6 py-3 text-center">
                     Ganancia<br></br>
                   </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    USD<br></br>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -932,6 +943,9 @@ const Presupuesto = () => {
                         {ganancia(val2.idp)}{" "}
                         {obtenerpais("abreviacion", idpaisv)}
                       </td>
+                      <td className="px-6 py-4 text-center">
+                        {convertirusd(idpaisv, val2.preciov)} USD
+                      </td>
                     </tr>
                   );
                 })}
@@ -966,6 +980,7 @@ const Presupuesto = () => {
                       </Button>
                     </Popconfirm>
                   </td>
+                  <td className="px-6 py-4 text-center"></td>
                   <td className="px-6 py-4 text-center"></td>
                   <td className="px-6 py-4 text-center"></td>
                 </tr>
