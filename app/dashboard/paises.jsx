@@ -226,6 +226,8 @@ const Paises = () => {
         setPaises({
           nombre: listapaises[i].nombre,
           precio: listapaises[i].precio,
+          abreviacion: listapaises[i].abreviacion,
+          descripcion: listapaises[i].descripcion,
         });
       }
     }
