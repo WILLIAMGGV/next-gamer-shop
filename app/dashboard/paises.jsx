@@ -253,6 +253,7 @@ const Paises = () => {
       ...paises,
       [e.target.name]: e.target.value,
     });
+    console.log(paises);
   }; //LISTO
 
   const handleChangejuego = (e) => {
@@ -508,8 +509,8 @@ const Paises = () => {
                         setPaises({
                           nombre: "null",
                           precio: 0,
-                          abreviacion: "",
-                          descripcion: "",
+                          abreviacion: "null",
+                          descripcion: "null",
                         });
                       }}
                     >

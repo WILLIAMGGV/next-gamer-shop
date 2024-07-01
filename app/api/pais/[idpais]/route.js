@@ -4,7 +4,7 @@ import { conn } from "@/app/libs/mysql";
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    console.log(data);
+
     const updateData = {
       nombre: data.nombre,
       precio: data.precio,
