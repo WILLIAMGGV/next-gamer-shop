@@ -8,7 +8,10 @@ const Products = ({ tipo, listadejuegos }) => {
       <div className="ml-4 mr-4 max-md:ml-2  max-md:mr-2 flex flex-wrap md:grid-cols-2 place-content-around">
         {listadejuegos.map((val, key) => {
           return (
-            <div className="flex flex-col w-[300px] max-md:w-[180px]  p-4 cursor-pointer  ">
+            <div
+              key={key}
+              className="flex flex-col w-[300px] max-md:w-[180px]  p-4 cursor-pointer  "
+            >
               <div className="hover:bg-gradient-to-tr hover:from-blue-950 hover:to-purple-600 bg-gradient-to-tr from-white to-blue-400 hover:border-2 text-blue-900 hover:text-white rounded-xl bg-white">
                 <img
                   className="rounded-t-xl shadow-2xl w-full h-40 max-md:h-[110px]"

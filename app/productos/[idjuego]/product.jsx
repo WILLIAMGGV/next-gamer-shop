@@ -241,7 +241,7 @@ const Product = ({
                     >
                       {paquetes.map((val, key) => {
                         return (
-                          <option value={val.id}>
+                          <option key={key} value={val.id}>
                             {val.nombre} (Costo: {obtenerprecio(val.id)}Bs)
                           </option>
                         );
