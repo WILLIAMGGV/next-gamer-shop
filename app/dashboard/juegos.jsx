@@ -7,11 +7,16 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EmojiPicker from "emoji-picker-react";
 
+import { uploadFile } from "../firebase/db";
+import { db } from "../firebase/db";
+import { collection } from "firebase/firestore";
+
 const Juegos = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [showModal2, setShowModal2] = React.useState(false);
   const [showModal3, setShowModal3] = React.useState(false);
   const [showModal4, setShowModal4] = React.useState(false);
+  const [showModal5, setShowModal5] = React.useState(false);
 
   const [listajuegos, setListajuegos] = React.useState([]);
   const [listapaquetes, setListapaquetes] = React.useState([]);
@@ -55,6 +60,8 @@ const Juegos = () => {
   const [valoremoji2, setValoremoji2] = React.useState("");
   const [encodedEmoji2, setEncodedEmoji2] = React.useState("");
   const [encodedEmoji1, setEncodedEmoji1] = React.useState("");
+  const [file, setFile] = React.useState(null);
+  const [rutajuego, setRutajuego] = React.useState("");
 
   const handleSelect = (emoji) => {
     if (estado2 == 1) {
@@ -79,6 +86,19 @@ const Juegos = () => {
 
     setEncodedEmoji2(encodeURIComponent(emoji.emoji));
     const decodeurl = decodeURIComponent(encodedEmoji);
+  };
+
+  const subirarchivo = async (e) => {
+    if (file) {
+      try {
+        const valornuevo = "P" + valorid2;
+        const result = await uploadFile(file, valornuevo);
+        console.log(result);
+        setRutajuego(result);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const getjuegos = () => {
@@ -122,6 +142,9 @@ const Juegos = () => {
         if (tipo == "encabezado") {
           return listajuegos[i].encabezado;
         }
+        if (tipo == "ruta") {
+          return listajuegos[i].ruta;
+        }
         setJuegos({
           nombre: listajuegos[i].nombre,
           categoria: listajuegos[i].categoria,
@@ -129,6 +152,7 @@ const Juegos = () => {
           seccion1: listajuegos[i].seccion1,
           seccion2: listajuegos[i].seccion2,
           encabezado: listajuegos[i].encabezado,
+          ruta: listajuegos[i].ruta,
         });
       }
     }
@@ -147,10 +171,17 @@ const Juegos = () => {
         if (tipo == "prg") {
           return listajuegos[i].prg;
         }
+        if (tipo == "ruta") {
+          return listajuegos[i].ruta;
+        }
+        if (tipo == "descripcion") {
+          return listajuegos[i].descripcion;
+        }
         setJuegos({
           nombre: listajuegos[i].nombre,
           categoria: listajuegos[i].categoria,
           prg: listajuegos[i].prg,
+          ruta: listajuegos[i].ruta,
         });
       }
     }
@@ -315,6 +346,25 @@ const Juegos = () => {
     }
   };
 
+  const guardardescripcion = async () => {
+    var descripcion = document.getElementById("descripcion_juego").value;
+    var datos = {
+      descripcion: descripcion,
+      ruta: rutajuego,
+    };
+    const res = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/descripcion/${valorid2}`,
+      datos
+    );
+
+    if (res.request.status === 200) {
+      msjsave("Registro Actualizado con Exito", "save");
+
+      setShowModal5(false);
+      getjuegos();
+    }
+  };
+
   const confirmdelete = (id) => {
     selectdelete(id);
   };
@@ -338,6 +388,10 @@ const Juegos = () => {
   useEffect(() => {
     obtenerregistro2();
   }, [valoridp]);
+
+  useEffect(() => {
+    subirarchivo();
+  }, [file]);
 
   return (
     <div>
@@ -405,10 +459,12 @@ const Juegos = () => {
                       >
                         <img
                           className="w-10 h-10 rounded-full cursor-pointer"
-                          src="https://picsum.photos/200"
+                          src={val.ruta}
                           alt="Jese image"
                           onClick={() => {
                             setValorid2(val.id);
+                            setRutajuego(val.ruta);
+                            setShowModal5(true);
                           }}
                         />
                       </th>
@@ -557,6 +613,7 @@ const Juegos = () => {
                           onClick={() => {
                             setShowModal3(true);
                             setValoridp(val.id);
+
                             setEstado2(1);
                           }}
                         >
@@ -1253,6 +1310,114 @@ const Juegos = () => {
                       No, cancelar
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null}
+      {showModal5 ? (
+        <>
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="relative w-auto my-6 mx-auto max-w-lg">
+              {/*content*/}
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
+                {/*header*/}
+                <div className=" bg-cyan-900 flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                  <h3 className="text-xl text-blue-200 pb-0 font-bold">
+                    <div>Foto y Descripcion</div>
+                  </h3>
+                  <button
+                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      ×
+                    </span>
+                  </button>
+                </div>
+                {/*body*/}
+                <div className="relative p-6 flex-auto">
+                  <div className="grid gap-4 mb-4 grid-cols-2">
+                    <div>
+                      <img
+                        className="w-20 h-20 rounded-xl cursor-pointer"
+                        src={rutajuego}
+                        alt={obtenernombre1("nombre")}
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label
+                        for="file_input"
+                        className="block mb-2 text-sm font-medium text-gray-900 "
+                      >
+                        Foto del Juego
+                      </label>
+                      <input
+                        onChange={(e) => {
+                          const filer = e.target.files[0];
+                          setFile(filer);
+                          console.log(filer);
+                        }}
+                        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 "
+                        id="file_input"
+                        type="file"
+                      ></input>
+                    </div>
+                    <div className="col-span-2">
+                      <label
+                        for="descripcion_juego"
+                        className="block mb-2 text-sm font-medium text-gray-900 "
+                      >
+                        Descripcion
+                      </label>
+
+                      <textarea
+                        id="descripcion_juego"
+                        rows="4"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Escriba su descripcion"
+                      >
+                        {obtenernombre1("descripcion")}
+                      </textarea>
+                    </div>
+                  </div>
+                </div>
+                {/*footer*/}
+                <div className="flex bg-cyan-900 items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
+                  <button
+                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={() => setShowModal5(false)}
+                  >
+                    Cerrar
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      guardardescripcion();
+                    }}
+                    className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                  >
+                    <svg
+                      className="w-[24px] h-[24px] text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.414A2 2 0 0 0 20.414 6L18 3.586A2 2 0 0 0 16.586 3H5Zm10 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7V5h8v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    &nbsp;&nbsp;Guardar
+                  </button>
                 </div>
               </div>
             </div>

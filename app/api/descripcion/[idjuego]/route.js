@@ -1,38 +1,18 @@
 import { NextResponse } from "next/server";
 import { conn } from "@/app/libs/mysql";
 
-export async function GET(request, { params }) {
-  try {
-    const results = await conn.query(
-      "SELECT * FROM facturas WHERE referencia=?",
-      [params.idfactura]
-    );
-    return NextResponse.json(results[0]);
-  } catch (error) {
-    //console.log(error);
-    return NextResponse.json(
-      {
-        message: error.message,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-}
-
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
 
-    console.log(params.idfactura);
     const updateData = {
-      estatus: data.estatus,
+      ruta: data.ruta,
+      descripcion: data.descripcion,
     };
 
-    const result = await conn.query("UPDATE facturas SET ? WHERE id = ?", [
+    const result = await conn.query("UPDATE juegos SET ? WHERE id = ?", [
       updateData,
-      params.idfactura,
+      params.idjuego,
     ]);
 
     if (result[0].affectedRows === 0) {

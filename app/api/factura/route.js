@@ -3,9 +3,10 @@ import { conn } from "../../libs/mysql";
 
 export async function POST(request) {
   try {
-    const { fecha, referencia, total, telefono, listatemporal } =
+    const { fecha, referencia, total, telefono, listatemporal, ruta, estatus } =
       await request.json();
-
+    console.log("MOSTRANDO LISTA");
+    console.log(listatemporal);
     /*console.log(
       fecha +
         " " +
@@ -23,6 +24,8 @@ export async function POST(request) {
       referencia: referencia,
       total: total,
       telefono: telefono,
+      ruta: ruta,
+      estatus: estatus,
     });
 
     for (let i = 0; i < listatemporal.length; i++) {
@@ -32,6 +35,8 @@ export async function POST(request) {
         precio: listatemporal[i].precio,
         precioc: listatemporal[i].precioc,
         abreviacion: listatemporal[i].abreviacion,
+        datos_id: listatemporal[i].datos_id,
+        datos_email: listatemporal[i].datos_email,
       });
     }
 

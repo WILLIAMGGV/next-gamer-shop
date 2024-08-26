@@ -504,12 +504,16 @@ const Facturar = () => {
   };
 
   const agregaralcarrito = async (idp, precio, precioc, idpais) => {
+    var datos_id = "";
+    var datos_email = "";
     var data = {
       idp,
       precio,
       precioc,
       idpais,
       abreviacion,
+      datos_id,
+      datos_email,
     };
 
     const res = await axios.post(
@@ -552,12 +556,14 @@ const Facturar = () => {
       var total = obtenertotalgeneral();
       var fecha = obtenerfechaactual();
       var telefono = "584126515046";
+      var ruta = "";
       var data = {
         referencia,
         total,
         fecha,
         telefono,
         listatemporal,
+        ruta,
       };
       setListaTemporal2(listatemporal);
 

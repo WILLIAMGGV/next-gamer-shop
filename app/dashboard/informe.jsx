@@ -7,8 +7,13 @@ import { DatePicker, Space } from "antd";
 import { Chart } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Informe = () => {
   const [showModal, setShowModal] = React.useState(false);
+  const [showModal2, setShowModal2] = React.useState(false);
+  const [rutafoto, setRutafoto] = React.useState(false);
 
   const obtenerfechaactual = () => {
     const fechaActual = new Date();
@@ -21,6 +26,21 @@ const Informe = () => {
       .padStart(2, "0")}`;
 
     return fechaFormateada; // Output: la fecha actual en formato dd-mm-yyyy
+  };
+
+  const msjsave = (mensajesave, tipodemensaje) => {
+    if (tipodemensaje == "save") {
+      toast.success(mensajesave, {});
+    }
+    if (tipodemensaje == "error") {
+      toast.error(mensajesave, {});
+    }
+    if (tipodemensaje == "warning") {
+      toast.warning(mensajesave, {});
+    }
+    if (tipodemensaje == "info") {
+      toast.info(mensajesave, {});
+    }
   };
 
   const obtenerfecha2 = (fecha) => {
@@ -186,6 +206,24 @@ const Informe = () => {
     return null;
   };
 
+  const confirmarpago = async () => {
+    var estatus = "Confirmado";
+    var data = {
+      estatus: "Confirmado",
+    };
+    const res = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/factura/${idfactura}`,
+      data
+    );
+
+    if (res.request.status === 200) {
+      msjsave("Confirmacion de Pago Exitoso", "save");
+
+      setShowModal2(false);
+      getfacturas();
+    }
+  };
+
   useEffect(() => {
     getfacturas();
     getpaquetes2();
@@ -237,7 +275,9 @@ const Informe = () => {
                   <th scope="col" className="px-6 py-3 text-center">
                     Total
                   </th>
-
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Estatus
+                  </th>
                   <th scope="col" className="px-6 py-3">
                     <span className="sr-only">Mostrar</span>
                   </th>
@@ -259,10 +299,34 @@ const Informe = () => {
                       <td className="px-6 py-4 text-center">
                         {obtenerfecha2(val.fecha)}
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        {val.referencia}
+                      <td className="px-6 py-4">
+                        {val.ruta != "" ? (
+                          <svg
+                            class="w-6 h-6 text-gray-800 dark:text-white cursor-pointer hover:text-blue-500"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            onClick={() => {
+                              setShowModal2(true);
+                              setRutafoto(val.ruta);
+                              setIdfactura(val.id);
+                            }}
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M7.5 4.586A2 2 0 0 1 8.914 4h6.172a2 2 0 0 1 1.414.586L17.914 6H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h1.086L7.5 4.586ZM10 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0Zm2-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <>{val.referencia}</>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-center">{val.total}</td>
+                      <td className="px-6 py-4 text-center">{val.estatus}</td>
 
                       <td className="px-6 py-4 text-right">
                         <svg
@@ -310,6 +374,7 @@ const Informe = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
       {showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -390,6 +455,70 @@ const Informe = () => {
                     onClick={() => setShowModal(false)}
                   >
                     Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null}
+      {showModal2 ? (
+        <>
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="relative w-auto my-6 mx-auto max-w-lg">
+              {/*content*/}
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none bg-white">
+                {/*header*/}
+                <div className=" bg-cyan-900 flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                  <h3 className="text-xl text-blue-200 pb-0 font-bold">
+                    <div>Comprobante de Pago</div>
+                  </h3>
+                  <button
+                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      ×
+                    </span>
+                  </button>
+                </div>
+                {/*body*/}
+                <div className="relative p-0 flex-auto">
+                  <img src={rutafoto} alt="" />
+                </div>
+                {/*footer*/}
+                <div className="flex bg-cyan-900 items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
+                  <button
+                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={() => setShowModal2(false)}
+                  >
+                    Cerrar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      confirmarpago();
+                    }}
+                    className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-2 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2"
+                  >
+                    <svg
+                      class="w-6 h-6 text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    &nbsp;&nbsp;Confirmar Pago
                   </button>
                 </div>
               </div>

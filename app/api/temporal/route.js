@@ -20,7 +20,8 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { idp, precio, precioc, idpais, abreviacion } = await request.json();
+    const { idp, precio, precioc, idpais, abreviacion, datos_id, datos_email } =
+      await request.json();
 
     /*console.log(
       idp + " " + precio + " " + precioc + " " + idpais + " " + abreviacion
@@ -32,6 +33,8 @@ export async function POST(request) {
       precioc: precioc,
       idpais: idpais,
       abreviacion: abreviacion,
+      datos_email: datos_email,
+      datos_id: datos_id,
     });
 
     return NextResponse.json({
