@@ -315,11 +315,11 @@ const Pay = ({
 
     var encabezado1 =
       "%2ATOP%20POWER%20GAMERS%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A" +
-      "COMPRA--->%0A%2AFecha%3A%2A" +
+      "COMPRA--->%0A%2AFecha%3A%2A%20" +
       fecha +
-      "%0A%2A#Factura%3A%2A" +
+      "%0A%2A#Factura%3A%2A%20" +
       compras2[0].id +
-      "%0A%2A#Referencia%3A%2A" +
+      "%0A%2A#Referencia%3A%2A%20" +
       compras2[0].referencia;
 
     var detalles1 =
