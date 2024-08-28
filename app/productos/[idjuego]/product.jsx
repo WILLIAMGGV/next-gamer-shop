@@ -12,6 +12,10 @@ const Product = ({
 }) => {
   const [asignacion, setAsignacion] = useState([]);
   const [paquetes, setPaquetes] = useState([]);
+  const [idfree, setIdfree] = useState("");
+  const [verificado, setVerificado] = useState(false);
+  const [resultado, setResultado] = useState([]);
+  const [nick, setNick] = useState("");
 
   const actualizacarro = (mensaje) => {
     cambiacarro(mensaje);
@@ -78,6 +82,11 @@ const Product = ({
       msjsave("Debes ingresar tu ID", "warning");
       return null;
     }
+    if (datosjuego.id === 1 && nick === "") {
+      msjsave("Debes ingresar un ID valido, para Continuar", "warning");
+      return null;
+    }
+
     if (datos_email === "") {
       msjsave("Debes Ingresar tu Email", "warning");
       return null;
@@ -97,6 +106,7 @@ const Product = ({
       nombre: nombre,
       datos_id: datos_id,
       datos_email: datos_email,
+      datos_nick: nick,
       abreviacion: obtenerpais(idpais, "abreviacion"),
     });
 
@@ -111,6 +121,7 @@ const Product = ({
     console.log(nombre);
     console.log(datos_id);
     console.log(datos_email);
+    console.log(nick);
     actualizacarro("NUEVO MENSAJE");
   };
 
@@ -126,6 +137,24 @@ const Product = ({
     document.getElementById("botonagregar").disabled = false;
   };
 
+  const verificarid = () => {
+    axios
+      .get(
+        `https://free-ff-api-src-5plp.onrender.com/api/v1/account?region=US&uid=${idfree}`
+      )
+      .then((response) => {
+        if (response.data === null) {
+          setVerificado(false);
+        } else {
+          setResultado(response.data);
+          setVerificado(true);
+        }
+
+        console.log(response.data);
+      });
+    console.log(idfree);
+  };
+
   useEffect(() => {
     getpaquetes();
   }, [datosjuego]);
@@ -133,6 +162,22 @@ const Product = ({
   useEffect(() => {
     actualizacarro("mensaje");
   }, [idpais]);
+
+  useEffect(() => {
+    if (resultado.length !== 0) {
+      setNick(resultado.basicInfo.nickname);
+      console.log(resultado.basicInfo.nickname);
+    }
+  }, [resultado]);
+
+  useEffect(() => {
+    if (idfree.length === 10) {
+      verificarid();
+    } else {
+      setVerificado(false);
+      setNick("");
+    }
+  }, [idfree]);
 
   return (
     <>
@@ -189,11 +234,85 @@ const Product = ({
                     <input
                       type="text"
                       id="datos_id"
+                      onChange={(e) => setIdfree(e.target.value)}
                       aria-describedby="helper-text-explanation"
                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder=""
                     />
                   </div>
+                  {datosjuego.id === 1 ? (
+                    <div className="w-full text-left">
+                      <div className="flex flex-col">
+                        <div className="flex flex-row">
+                          <label
+                            for="helper-text"
+                            class="block mb-2 text-sm font-medium text-black"
+                          >
+                            NickName:{" "}
+                          </label>
+
+                          {verificado === true ? (
+                            <div className="flex flex-row">
+                              <span className="text-[12px] text-green-600 font-bold">
+                                {" "}
+                                (Verificado)
+                              </span>
+                              <svg
+                                class="w-[16px] h-[16px] text-green-600"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          ) : (
+                            <div className="flex flex-row">
+                              <span className="text-[12px] text-red-600 font-bold">
+                                {" "}
+                                (No Verificado)
+                              </span>
+                              <svg
+                                class="w-[18px] h-[18px] text-red-600"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                        <span className="bg-slate-400 w-full rounded-sm mt-2">
+                          {verificado === true ? (
+                            <>{nick}</>
+                          ) : (
+                            <span className="text-red-600">
+                              Debes Ingresar un ID valido
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                   <div className="w-full">
                     <div className="flex flex-row">
                       <label

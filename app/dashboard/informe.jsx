@@ -441,6 +441,9 @@ const Informe = () => {
                                   <span>
                                     <strong>correo:</strong> {val.datos_email}
                                   </span>
+                                  <span>
+                                    <strong>nick:</strong> {val.datos_nick}
+                                  </span>
                                 </div>
                                 onConfirm={() => {}}
                               >

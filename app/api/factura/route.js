@@ -37,6 +37,7 @@ export async function POST(request) {
         abreviacion: listatemporal[i].abreviacion,
         datos_id: listatemporal[i].datos_id,
         datos_email: listatemporal[i].datos_email,
+        datos_nick: listatemporal[i].datos_nick,
       });
     }
 
