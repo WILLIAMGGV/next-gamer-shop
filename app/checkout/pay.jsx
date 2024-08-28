@@ -344,7 +344,7 @@ const Pay = ({
     const decodeurl = decodeURIComponent(text);
     await navigator.clipboard.writeText(decodeurl);
 
-    window.location = "https://wa.me/584126515046?text=" + text;
+    window.location = "https://wa.me/584249148366?text=" + text;
     //msjsave("COPIADO CON EXITO", "save");
   };
 
