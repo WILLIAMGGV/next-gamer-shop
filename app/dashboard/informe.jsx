@@ -4,6 +4,7 @@ import logo from "../img/V1.png";
 import React, { useRef, useEffect } from "react";
 import axios from "axios";
 import { DatePicker, Space } from "antd";
+import { Button, Popconfirm, Tooltip } from "antd";
 import { Chart } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 
@@ -301,26 +302,29 @@ const Informe = () => {
                       </td>
                       <td className="px-6 py-4">
                         {val.ruta != "" ? (
-                          <svg
-                            class="w-6 h-6 text-gray-800 dark:text-white cursor-pointer hover:text-blue-500"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                            onClick={() => {
-                              setShowModal2(true);
-                              setRutafoto(val.ruta);
-                              setIdfactura(val.id);
-                            }}
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M7.5 4.586A2 2 0 0 1 8.914 4h6.172a2 2 0 0 1 1.414.586L17.914 6H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h1.086L7.5 4.586ZM10 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0Zm2-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
+                          <div className="flex flex-row">
+                            <svg
+                              class="w-6 h-6 text-gray-800 dark:text-white cursor-pointer hover:text-blue-500"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                              onClick={() => {
+                                setShowModal2(true);
+                                setRutafoto(val.ruta);
+                                setIdfactura(val.id);
+                              }}
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M7.5 4.586A2 2 0 0 1 8.914 4h6.172a2 2 0 0 1 1.414.586L17.914 6H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h1.086L7.5 4.586ZM10 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0Zm2-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                            {val.referencia}
+                          </div>
                         ) : (
                           <>{val.referencia}</>
                         )}
@@ -423,7 +427,42 @@ const Informe = () => {
                       return (
                         <tr key={val.id}>
                           <td colSpan={2} className="italic font-bold">
-                            {obtenernombre3("nombre", val.idp)}
+                            <div className="flex flex-row">
+                              {" "}
+                              {obtenernombre3("nombre", val.idp)}
+                              <Popconfirm
+                                title="Datos del Juego"
+                                okText="Ok"
+                                showCancel={false}
+                                description=<div className="flex flex-col">
+                                  <span>
+                                    <strong>ID:</strong> {val.datos_id}
+                                  </span>
+                                  <span>
+                                    <strong>correo:</strong> {val.datos_email}
+                                  </span>
+                                </div>
+                                onConfirm={() => {}}
+                              >
+                                <svg
+                                  class="w-6 h-6 text-gray-800 dark:text-white"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="24"
+                                  height="24"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M10 3v4a1 1 0 0 1-1 1H5m4 8h6m-6-4h6m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"
+                                  />
+                                </svg>
+                              </Popconfirm>
+                            </div>
                           </td>
                           <td className=" text-right">
                             {val.precio} {val.abreviacion}

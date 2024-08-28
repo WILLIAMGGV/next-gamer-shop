@@ -20,6 +20,7 @@ const Pay = ({
   const [detalles, setDetalles] = useState([]);
   const [cuenta, setCuenta] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [estatus, setEstatus] = useState("Pendiente");
 
   const msjsave = (mensajesave, tipodemensaje) => {
     if (tipodemensaje == "save") {
@@ -208,7 +209,7 @@ const Pay = ({
   };
 
   const procesarpago = async () => {
-    var referencia = 0;
+    var referencia = document.getElementById("datos_referencia").value;
     //  if (nombrebanco == "Ninguno") {
     //    msjsave("Seleccione un Banco o Metodo de Pago", "error");
     //    error = 1;
@@ -224,6 +225,11 @@ const Pay = ({
 
     if (rutajuego === "") {
       msjsave("Debes agregar tu capture o Comprobante de Pago", "warning");
+      return;
+    }
+
+    if (referencia === "") {
+      msjsave("Debes colocar el Numero de Referencia", "warning");
       return;
     }
 
@@ -266,6 +272,7 @@ const Pay = ({
           fecha: fecha,
           ruta: ruta,
           total: total,
+          referencia: referencia,
           estatus: "Pendiente",
         },
       ];
@@ -282,7 +289,63 @@ const Pay = ({
       localStorage.removeItem("powercapture" + paisactual);
 
       chequeararchivo();
+      copiarfactura(compra, listatemporal);
     }
+  };
+
+  const obtenerestatus = async (id) => {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/estatus/${id}`
+    );
+    console.log(res.data[0].estatus);
+    if (res.data[0].estatus === undefined) {
+      setEstatus("Pendiente");
+    } else {
+      setEstatus(res.data[0].estatus);
+    }
+  };
+
+  const copiarfactura = async (compras2, detalles2) => {
+    if (compras2.length === 0) {
+      return;
+    } else {
+      var total = compras2[0].total;
+      var fecha = compras2[0].fecha;
+    }
+
+    var encabezado1 =
+      "%2ATOP%20POWER%20GAMERS%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A" +
+      "COMPRA--->%0A%2AFecha%3A%2A%" +
+      fecha +
+      "%0A%2A#Factura%3A%2A%" +
+      compras2[0].id +
+      "%0A%2A#Referencia%3A%2A%" +
+      compras2[0].referencia;
+
+    var detalles1 =
+      "%0A%2AProducto%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A";
+    for (var i = 0; i < detalles2.length; i++) {
+      detalles1 +=
+        "_" +
+        detalles2[i].nombre +
+        "_%20---%3E%20" +
+        detalles2[i].abreviacion +
+        "%20" +
+        detalles2[i].precio +
+        "%0A";
+    }
+    detalles1 +=
+      "%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A_%2ATOTAL%20A%20PAGAR%3A%20" +
+      "%20" +
+      total +
+      "%2A_%0A%0AGracias%20por%20Preferirnos..%F0%9F%A4%9D";
+    var text = encabezado1 + detalles1;
+    text = text.replace(/\s+/g, "%20");
+    //const decodeurl = decodeURIComponent(text);
+    //await navigator.clipboard.writeText(decodeurl);
+
+    window.location = "https://wa.me/584126515046?text=" + text;
+    //msjsave("COPIADO CON EXITO", "save");
   };
 
   useEffect(() => {
@@ -313,6 +376,13 @@ const Pay = ({
   useEffect(() => {
     console.log(rutajuego);
   }, [rutajuego]);
+
+  useEffect(() => {
+    if (compras.length === 0) {
+    } else {
+      obtenerestatus(compras[0].id);
+    }
+  }, [compras]);
 
   return (
     <>
@@ -387,13 +457,13 @@ const Pay = ({
                       >
                         {val.id}
                       </th>
-                      {val.estatus === "Pendiente" ? (
-                        <td className="px-6 py-4 flex flex-col text-yellow-400 font-bold">
-                          {val.estatus}
+                      {estatus === "Confirmado" ? (
+                        <td className="px-6 py-4 flex flex-col text-green-700 font-bold">
+                          Confirmado
                         </td>
                       ) : (
-                        <td className="px-6 py-4 flex flex-col text-green-700 font-bold">
-                          {val.estatus}
+                        <td className="px-6 py-4 flex flex-col text-yellow-400 font-bold">
+                          Pendiente
                         </td>
                       )}
 
@@ -620,7 +690,24 @@ const Pay = ({
                       type="file"
                     ></input>
                   </div>
-                  <div className=" flex flex-r++cvhgow place-content-end mt-5">
+                  <div className="w-full">
+                    <div className="flex flex-row">
+                      <label
+                        for="helper-text"
+                        class="block mb-2 text-sm font-medium text-black"
+                      >
+                        Referencia de Pago
+                      </label>
+                    </div>
+                    <input
+                      type="text"
+                      id="datos_referencia"
+                      aria-describedby="helper-text-explanation"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder=""
+                    />
+                  </div>
+                  <div className=" flex flex-row place-content-start mt-5">
                     <button
                       type="button"
                       onClick={() => {
