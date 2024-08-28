@@ -315,11 +315,11 @@ const Pay = ({
 
     var encabezado1 =
       "%2ATOP%20POWER%20GAMERS%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A" +
-      "COMPRA--->%0A%2AFecha%3A%2A%" +
+      "COMPRA--->%0A%2AFecha%3A%2A" +
       fecha +
-      "%0A%2A#Factura%3A%2A%" +
+      "%0A%2A#Factura%3A%2A" +
       compras2[0].id +
-      "%0A%2A#Referencia%3A%2A%" +
+      "%0A%2A#Referencia%3A%2A" +
       compras2[0].referencia;
 
     var detalles1 =
@@ -342,7 +342,7 @@ const Pay = ({
     var text = encabezado1 + detalles1;
     text = text.replace(/\s+/g, "%20");
     const decodeurl = decodeURIComponent(text);
-    //await navigator.clipboard.writeText(decodeurl);
+    await navigator.clipboard.writeText(decodeurl);
 
     window.location = "https://wa.me/584126515046?text=" + decodeurl;
     //msjsave("COPIADO CON EXITO", "save");
