@@ -341,10 +341,10 @@ const Pay = ({
       "%2A_%0A%0AGracias%20por%20Preferirnos..%F0%9F%A4%9D";
     var text = encabezado1 + detalles1;
     text = text.replace(/\s+/g, "%20");
-    //const decodeurl = decodeURIComponent(text);
+    const decodeurl = decodeURIComponent(text);
     //await navigator.clipboard.writeText(decodeurl);
 
-    window.location = "https://wa.me/584126515046?text=" + text;
+    window.location = "https://wa.me/584126515046?text=" + decodeurl;
     //msjsave("COPIADO CON EXITO", "save");
   };
 
