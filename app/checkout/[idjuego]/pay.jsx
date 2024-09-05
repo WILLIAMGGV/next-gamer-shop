@@ -349,7 +349,9 @@ const Pay = ({
     }
 
     var text =
-      "Compra%20a%20%2ATop%20Power%20Gamers%2A%20%E2%9A%A1%0A%0A%2AJuego%3A%2A%20Free%20Fire%20%F0%9F%94%A5%0A%2AID%20del%20Jugador%3A%2A%20" +
+      "Compra%20a%20%2ATop%20Power%20Gamers%2A%20%E2%9A%A1%0A%0A%2AJuego%3A%2A%20Free%20Fire%20%F0%9F%94%A5%0A%2ANombre%20del%20Jugador%3A%2A%20" +
+      detalles2[0].datos_nick +
+      "%0A%2AID%20del%20Jugador%3A%2A%20" +
       detalles2[0].datos_id +
       "%0A%2APaquete%3A%2A%20" +
       detalles1 +
