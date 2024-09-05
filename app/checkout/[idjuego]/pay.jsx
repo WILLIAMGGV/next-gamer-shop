@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import swal from "sweetalert";
-import { uploadFile } from "../firebase/db";
+import { uploadFile } from "../../firebase/db";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,6 +11,7 @@ const Pay = ({
   paisactual,
   listajuegos,
   paquetes,
+  idjuego,
 }) => {
   const [file, setFile] = useState(null);
   const [rutajuego, setRutajuego] = useState("");
@@ -21,6 +22,7 @@ const Pay = ({
   const [cuenta, setCuenta] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [estatus, setEstatus] = useState("Pendiente");
+  const [errorreferencia, setErrorreferencia] = useState(true);
 
   const msjsave = (mensajesave, tipodemensaje) => {
     if (tipodemensaje == "save") {
@@ -104,7 +106,7 @@ const Pay = ({
       if (willDelete) {
         listacarrito.splice(id, 1);
         localStorage.setItem(
-          "powercarrito" + paisactual,
+          "powercarrito" + paisactual + "J" + idjuego,
           JSON.stringify(listacarrito)
         );
         actualizacarro("mensaje");
@@ -238,6 +240,11 @@ const Pay = ({
       return;
     }
 
+    if (errorreferencia === true) {
+      msjsave("La referencia que intenta agregar esta en uso", "error");
+      return;
+    }
+
     var listatemporal = listacarrito;
     var ruta = rutajuego;
     var total = obtenertotal();
@@ -282,7 +289,10 @@ const Pay = ({
         "powerdetalles" + paisactual,
         JSON.stringify(listatemporal)
       );
-      localStorage.setItem("powercarrito" + paisactual, JSON.stringify([]));
+      localStorage.setItem(
+        "powercarrito" + paisactual + "J" + idjuego,
+        JSON.stringify([])
+      );
       actualizacarro("mensaje");
       setCompras(compra);
       localStorage.removeItem("powerorden" + paisactual);
@@ -305,6 +315,20 @@ const Pay = ({
     }
   };
 
+  const chequearreferencia = () => {
+    const asignar = document.getElementById("datos_referencia").value;
+
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/api/factura/${asignar}/`)
+      .then((response) => {
+        if (response.data.length == 0) {
+          setErrorreferencia(false);
+        } else {
+          setErrorreferencia(true);
+        }
+      });
+  };
+
   const copiarfactura = async (compras2, detalles2) => {
     if (compras2.length === 0) {
       return;
@@ -313,33 +337,33 @@ const Pay = ({
       var fecha = compras2[0].fecha;
     }
 
-    var encabezado1 =
-      "%2ATOP%20POWER%20GAMERS%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A" +
-      "COMPRA--->%0A%2AFecha%3A%2A%20" +
-      fecha +
-      "%0A%2AFactura%3A%2A%20" +
-      compras2[0].id +
-      "%0A%2AReferencia%3A%2A%20" +
-      compras2[0].referencia;
-
-    var detalles1 =
-      "%0A%2AProducto%2A%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A";
+    var detalles1 = "";
     for (var i = 0; i < detalles2.length; i++) {
-      detalles1 +=
-        "_" +
-        detalles2[i].nombre +
-        "_%20---%3E%20" +
-        detalles2[i].abreviacion +
+      detalles1 =
+        detalles1 +
         "%20" +
-        detalles2[i].precio +
-        "%0A";
+        detalles2[i].nombre +
+        "%20" +
+        detalles2[i].prg +
+        "%2C";
     }
-    detalles1 +=
-      "%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A_%2ATOTAL%20A%20PAGAR%3A%20" +
-      "%20" +
+
+    var text =
+      "Compra%20a%20%2ATop%20Power%20Gamers%2A%20%E2%9A%A1%0A%0A%2AJuego%3A%2A%20Free%20Fire%20%F0%9F%94%A5%0A%2AID%20del%20Jugador%3A%2A%20" +
+      detalles2[0].datos_id +
+      "%0A%2APaquete%3A%2A%20" +
+      detalles1 +
+      "%0A%2AMonto%20cancelado%3A%2A%20Bs%20" +
       total +
-      "%2A_%0A%0AGracias%20por%20Preferirnos..%F0%9F%A4%9D";
-    var text = encabezado1 + detalles1;
+      "%0A%2AReferencia%20%28Ultimos%206%20digitos%29%3A%2A%20" +
+      compras2[0].referencia +
+      "%0A%2ANro.%20de%20Pedido%3A%2A%2000000" +
+      compras2[0].id +
+      "%0A%2AFecha%3A%2A%20" +
+      compras2[0].fecha +
+      "%0A%2APais%3A%2A%C2%A0" +
+      detalles2[0].pais;
+
     text = text.replace(/\s+/g, "%20");
     const decodeurl = decodeURIComponent(text);
     await navigator.clipboard.writeText(decodeurl);
@@ -696,15 +720,19 @@ const Pay = ({
                         for="helper-text"
                         class="block mb-2 text-sm font-medium text-black"
                       >
-                        Referencia de Pago
+                        Referencia (Ultimos 6 Digitos)
                       </label>
                     </div>
                     <input
                       type="text"
                       id="datos_referencia"
                       aria-describedby="helper-text-explanation"
+                      maxLength="6"
                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder=""
+                      onChange={() => {
+                        chequearreferencia();
+                      }}
                     />
                   </div>
                   <div className=" flex flex-row place-content-start mt-5">

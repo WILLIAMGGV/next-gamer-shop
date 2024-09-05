@@ -265,7 +265,11 @@ function Productos({ params }) {
           </select>
         </div>
 
-        <Carrito idpais={paisactual} actualizacarro={actualizacarro} />
+        <Carrito
+          idpais={paisactual}
+          actualizacarro={actualizacarro}
+          idjuego={params.idjuego}
+        />
       </div>
       <Product
         tipo="Juegos"

@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
-const Carrito = ({ idpais, actualizacarro }) => {
+const Carrito = ({ idpais, actualizacarro, idjuego }) => {
   const [carrito, setCarrito] = useState([]);
   const actualizarcarrito = () => {
-    if (localStorage.getItem("powercarrito" + idpais) !== null) {
-      var carrito2 = JSON.parse(localStorage.getItem("powercarrito" + idpais));
+    if (
+      localStorage.getItem("powercarrito" + idpais + "J" + idjuego) !== null
+    ) {
+      var carrito2 = JSON.parse(
+        localStorage.getItem("powercarrito" + idpais + "J" + idjuego)
+      );
       setCarrito(carrito2.length);
     } else {
-      localStorage.setItem("powercarrito" + idpais, JSON.stringify([]));
+      localStorage.setItem(
+        "powercarrito" + idpais + "J" + idjuego,
+        JSON.stringify([])
+      );
       setCarrito(0); // crea la variable con un valor predeterminado
     }
   };
@@ -22,7 +29,7 @@ const Carrito = ({ idpais, actualizacarro }) => {
             <button
               type="button"
               onClick={() => {
-                window.location = "/checkout";
+                window.location = "/checkout/" + idjuego;
               }}
               class=" w-full cursor:pointer text-blue-700  hover:text-white font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 "
             >

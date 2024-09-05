@@ -3,10 +3,10 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import logo from "../img/V1.png";
+import logo from "../../img/V1.png";
 import { AutoComplete, Input } from "antd";
-import Footer from "../footer";
-import Carrito from "../carrito";
+import Footer from "../../footer";
+import Carrito from "../../carrito";
 import Pay from "./pay";
 
 function Checkout({ params }) {
@@ -78,7 +78,7 @@ function Checkout({ params }) {
   const actualizarcarrito = () => {
     if (paisactual !== undefined) {
       var carrito2 = JSON.parse(
-        localStorage.getItem("powercarrito" + paisactual)
+        localStorage.getItem("powercarrito" + paisactual + "J" + params.idjuego)
       );
       setCarrito(carrito2);
     }
@@ -287,7 +287,11 @@ function Checkout({ params }) {
           </select>
         </div>
 
-        <Carrito idpais={paisactual} actualizacarro={actualizacarro} />
+        <Carrito
+          idpais={paisactual}
+          actualizacarro={actualizacarro}
+          idjuego={params.idjuego}
+        />
       </div>
       <Pay
         listacarrito={carrito}
@@ -295,6 +299,7 @@ function Checkout({ params }) {
         paisactual={paisactual}
         listajuegos={listajuegos}
         paquetes={paquetes}
+        idjuego={params.idjuego}
       />
       {/*PIE DE PAGINA */}
       <Footer />

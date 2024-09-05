@@ -10,7 +10,6 @@ import Slidera from "./dashboard/slidera";
 import { AutoComplete, Input } from "antd";
 import Footer from "./footer";
 import Products from "./products";
-import Carrito from "./carrito";
 
 function HomePage() {
   const searchResult = (query) =>
@@ -168,7 +167,7 @@ function HomePage() {
           </AutoComplete>
         </div>
 
-        <div>
+        <div className="pr-2">
           <select
             id="default"
             onChange={(e) => {
@@ -192,8 +191,6 @@ function HomePage() {
             })}
           </select>
         </div>
-
-        <Carrito idpais={paisactual} />
       </div>
 
       <Slidera />

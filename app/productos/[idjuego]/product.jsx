@@ -16,9 +16,23 @@ const Product = ({
   const [verificado, setVerificado] = useState(false);
   const [resultado, setResultado] = useState([]);
   const [nick, setNick] = useState("");
+  const [carrito2, setCarrito2] = useState([]);
+  const [email, setEmail] = useState("");
 
   const actualizacarro = (mensaje) => {
     cambiacarro(mensaje);
+  };
+
+  const actualizarcarrito = () => {
+    var carrito1 = JSON.parse(
+      localStorage.getItem("powercarrito" + idpais + "J" + datosjuego.id)
+    );
+    console.log(idpais, datosjuego.id);
+    if (carrito1 === null) {
+      setCarrito2([]);
+    } else {
+      setCarrito2(carrito1);
+    }
   };
 
   const getpaquetes = () => {
@@ -56,6 +70,9 @@ const Product = ({
         if (tipo === "nombre") {
           return paquetes[i].nombre;
         }
+        if (tipo === "prg") {
+          return paquetes[i].prg;
+        }
       }
     }
   };
@@ -65,6 +82,9 @@ const Product = ({
       if (listapaises[i].id === parseInt(id)) {
         if (tipo === "abreviacion") {
           return listapaises[i].abreviacion;
+        }
+        if (tipo === "nombre") {
+          return listapaises[i].nombre;
         }
       }
     }
@@ -92,11 +112,19 @@ const Product = ({
       return null;
     }
 
-    if (localStorage.getItem("powercarrito" + idpais) !== null) {
-      var carrito = JSON.parse(localStorage.getItem("powercarrito" + idpais));
+    if (
+      localStorage.getItem("powercarrito" + idpais + "J" + datosjuego.id) !==
+      null
+    ) {
+      var carrito = JSON.parse(
+        localStorage.getItem("powercarrito" + idpais + "J" + datosjuego.id)
+      );
     } else {
       var carrito = [];
-      localStorage.setItem("powercarrito" + idpais, JSON.stringify([]));
+      localStorage.setItem(
+        "powercarrito" + idpais + "J" + datosjuego.id,
+        JSON.stringify([])
+      );
     }
 
     carrito.push({
@@ -108,9 +136,14 @@ const Product = ({
       datos_email: datos_email,
       datos_nick: nick,
       abreviacion: obtenerpais(idpais, "abreviacion"),
+      pais: obtenerpais(idpais, "nombre"),
+      prg: obtenerpaquete(idpaquete, "prg"),
     });
 
-    localStorage.setItem("powercarrito" + idpais, JSON.stringify(carrito));
+    localStorage.setItem(
+      "powercarrito" + idpais + "J" + datosjuego.id,
+      JSON.stringify(carrito)
+    );
     document.getElementById("botonagregar").className =
       "text-white mt-2 bg-[#000] hover:bg-[#000]/90 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center me-2 mb-2";
     document.getElementById("botonagregar").innerHTML =
@@ -123,10 +156,11 @@ const Product = ({
     console.log(datos_email);
     console.log(nick);
     actualizacarro("NUEVO MENSAJE");
+    actualizarcarrito();
   };
 
   const vercarrito = () => {
-    window.location = "/checkout";
+    window.location = "/checkout/" + datosjuego.id;
   };
 
   const actualizarboton = () => {
@@ -157,6 +191,7 @@ const Product = ({
 
   useEffect(() => {
     getpaquetes();
+    actualizarcarrito();
   }, [datosjuego]);
 
   useEffect(() => {
@@ -178,6 +213,16 @@ const Product = ({
       setNick("");
     }
   }, [idfree]);
+
+  useEffect(() => {
+    console.log(carrito2);
+    if (carrito2.length > 0) {
+      setNick(carrito2[0].datos_nick);
+      setVerificado(true);
+      setIdfree(carrito2[0].datos_id);
+      setEmail(carrito2[0].datos_email);
+    }
+  }, [carrito2]);
 
   return (
     <>
@@ -231,14 +276,28 @@ const Product = ({
                         />
                       </svg>
                     </div>
-                    <input
-                      type="text"
-                      id="datos_id"
-                      onChange={(e) => setIdfree(e.target.value)}
-                      aria-describedby="helper-text-explanation"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder=""
-                    />
+                    {carrito2.length === 0 ? (
+                      <input
+                        type="text"
+                        id="datos_id"
+                        onChange={(e) => setIdfree(e.target.value)}
+                        aria-describedby="helper-text-explanation"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder=""
+                        defaultValue={idfree}
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        id="datos_id"
+                        onChange={(e) => setIdfree(e.target.value)}
+                        aria-describedby="helper-text-explanation"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder=""
+                        defaultValue={idfree}
+                        disabled
+                      />
+                    )}
                   </div>
                   {datosjuego.id === 1 ? (
                     <div className="w-full text-left">
@@ -322,13 +381,28 @@ const Product = ({
                         Correo:
                       </label>
                     </div>
-                    <input
-                      type="email"
-                      id="datos_email"
-                      aria-describedby="helper-text-explanation"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder=""
-                    />
+                    {carrito2.length === 0 ? (
+                      <>
+                        <input
+                          type="email"
+                          id="datos_email"
+                          aria-describedby="helper-text-explanation"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder=""
+                          defaultValue={email}
+                        />
+                      </>
+                    ) : (
+                      <input
+                        type="email"
+                        id="datos_email"
+                        aria-describedby="helper-text-explanation"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder=""
+                        defaultValue={email}
+                        disabled
+                      />
+                    )}
                   </div>
                 </div>
               </div>
